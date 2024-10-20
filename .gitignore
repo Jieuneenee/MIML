@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories
 node_modules
 dist
 dist-ssr
@@ -23,4 +24,26 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment Variables
 .env
+
+# iOS 관련 파일
+ios/Pods/
+ios/Podfile.lock
+ios/build/
+xcuserdata/
+*.xcworkspace
+*.xcuserstate
+
+# Android 관련 파일
+android/.gradle/
+android/app/build/
+android/local.properties
+android/*.keystore
+android/.idea/
+android/app/debug/
+android/app/release/
+
+# Metro 관련 파일
+.expo/
+.expo-shared/
