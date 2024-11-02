@@ -1,51 +1,83 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import styled from 'styled-components/native';
-import {View, Text, Button} from 'react-native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-// 스택 네비게이터 생성
-const Stack = createNativeStackNavigator();
+// 스크린 컴포넌트 불러오기
+import LoginScreen from './src/screens/LoginScreen';
+import SignUpScreen from './src/screens/SignUpScreen';
+import ChartScreen from './src/screens/ChartScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import AddPostScreen from './src/screens/AddPostScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
 
-// 스타일 컴포넌트 정의
-const StyledView = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: #f8f9fa;
-`;
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-const StyledText = styled(Text)`
-  font-size: 20px;
-  color: #343a40;
-`;
+const MainTabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color, size}) => {
+        let iconName;
 
-// 첫 번째 화면(HomeScreen)
-const HomeScreen = ({navigation}) => (
-  <StyledView>
-    <StyledText>Hello, styled-components!</StyledText>
-    <Button
-      title="Go to Details"
-      onPress={() => navigation.navigate('Details')}
-    />
-  </StyledView>
+        if (route.name === 'Search') {
+          iconName = focused ? 'search' : 'search-outline';
+        } else if (route.name === 'AddPost') {
+          iconName = focused ? 'add' : 'add-outline';
+        } else if (route.name === 'Home') {
+          iconName = focused ? 'home' : 'home-outline';
+        } else if (route.name === 'Profile') {
+          iconName = focused ? 'person-circle' : 'person-circle-outline';
+        } else if (route.name === 'Chart') {
+          iconName = focused ? 'menu' : 'menu-outline';
+        }
+
+        return <Icon name={iconName} size={size} color={color} />;
+      },
+      /*아이콘 색상은 피그마와 동일하게 설정*/
+      tabBarActiveTintColor: '#FFFFFF', // 활성화된 아이콘 색상
+      tabBarInactiveTintColor: '#999999', // 비활성화된 아이콘 색상
+      tabBarStyle: {
+        backgroundColor: '#0A0A0A', // 탭 배경 색상
+        height: 60, // 탭 높이 조절
+      },
+      headerShown: false,
+    })}>
+    <Tab.Screen name="Search" component={SearchScreen} />
+    <Tab.Screen name="AddPost" component={AddPostScreen} />
+    <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Chart" component={ChartScreen} />
+  </Tab.Navigator>
 );
 
-// 두 번째 화면(DetailsScreen)
-const DetailsScreen = ({navigation}) => (
-  <StyledView>
-    <StyledText>This is the Details Screen</StyledText>
-    <Button title="Go back" onPress={() => navigation.goBack()} />
-  </StyledView>
-);
-
-// App 컴포넌트
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Main"
+          component={MainTabNavigator}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen // 아이콘 테스트용
+          name="TestIcon"
+          component={TestIcon}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
