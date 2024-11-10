@@ -68,7 +68,7 @@ const LoginScreen = ({navigation}) => (
 
     <Button //아이콘 테스트용
       onPress={() => {
-        navigation.navigate('TestIcon');
+        navigation.navigate('OtherProfile');
       }}>
       <ButtonText>test</ButtonText>
     </Button>

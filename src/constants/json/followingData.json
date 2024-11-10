@@ -1,0 +1,17 @@
+[
+  {
+    "userId": 1,
+    "name": "Alice",
+    "profileImageUrl": "https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg"
+  },
+  {
+    "userId": 2,
+    "name": "Charlie",
+    "profileImageUrl": "https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg"
+  },
+  {
+    "userId": 3,
+    "name": "David",
+    "profileImageUrl": "https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg"
+  }
+]

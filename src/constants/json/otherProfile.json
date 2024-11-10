@@ -1,0 +1,13 @@
+{
+  "userId": 1,
+  "name": "Jane Doe",
+  "profileImage": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg",
+  "followers": 120,
+  "playlist": [
+    {
+      "albumCover": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg",
+      "title": "Song Title 1",
+      "artist": "Artist 1"
+    }
+  ]
+}

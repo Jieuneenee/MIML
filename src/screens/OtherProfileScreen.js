@@ -1,34 +1,30 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {useRoute} from '@react-navigation/native'; // useRoute로 파라미터 받기
 import styled from 'styled-components/native';
-import ownProfile from '../constants/json/ownProfile.json';
+import {Text} from 'react-native';
+import profile from '../constants/json/otherProfile.json'; // followersData 가져오기
 
-const ProfileScreen = ({navigation}) => {
+const OtherProfileScreen = () => {
   return (
     <Container>
-      <ProfileImage source={{uri: ownProfile.profileImage}} />
-      <UserName>{ownProfile.name}</UserName>
-      <ButtonContainer>
-        <FollowButton onPress={() => navigation.navigate('Following')}>
-          <ButtonText>Following</ButtonText>
-        </FollowButton>
-        <FollowButton onPress={() => navigation.navigate('Followers')}>
-          <ButtonText>Followers</ButtonText>
-        </FollowButton>
-      </ButtonContainer>
+      <ProfileImage source={{uri: profile.profileImage}} />
+      <UserName>{profile.name}</UserName>
+      <FollowButton>
+        <ButtonText>Follow</ButtonText>
+      </FollowButton>
       <PlaylistTitle>Today's Shared Song</PlaylistTitle>
       <PlaylistContainer>
-        <AlbumCover source={{uri: ownProfile.playlist[0].albumCover}} />
+        <AlbumCover source={{uri: profile.playlist[0].albumCover}} />
         <SongDetails>
-          <SongTitle>{ownProfile.playlist[0].title}</SongTitle>
-          <SongArtist>{ownProfile.playlist[0].artist}</SongArtist>
+          <SongTitle>{profile.playlist[0].title}</SongTitle>
+          <SongArtist>{profile.playlist[0].artist}</SongArtist>
         </SongDetails>
       </PlaylistContainer>
     </Container>
   );
 };
 
-export default ProfileScreen;
+export default OtherProfileScreen;
 
 const Container = styled.View`
   flex: 1;
@@ -49,11 +45,6 @@ const UserName = styled.Text`
   font-size: 24px;
   color: #fff;
   font-weight: bold;
-  margin-bottom: 20px;
-`;
-
-const ButtonContainer = styled.View`
-  flex-direction: row;
   margin-bottom: 20px;
 `;
 

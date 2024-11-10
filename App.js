@@ -13,6 +13,10 @@ import AddPostScreen from './src/screens/AddPostScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
+import FollowingScreen from './src/screens/FollowingScreen';
+import FollowersScreen from './src/screens/FollowersScreen';
+import OtherProfileScreen from './src/screens/OtherProfileScreen';
+import SongDetailScreen from './src/screens/SongDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,6 +82,14 @@ const App = () => {
           component={TestIcon}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="Following" component={FollowingScreen} />
+        <Stack.Screen name="Followers" component={FollowersScreen} />
+        <Stack.Screen
+          name="OtherProfile"
+          component={OtherProfileScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="Detail" component={SongDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
