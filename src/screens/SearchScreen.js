@@ -166,12 +166,11 @@ const UserName = styled.Text`
 `;
 
 const ProfileButton = styled.TouchableOpacity`
-  background-color: #b08385;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 5px;
 `;
 
 const ButtonText = styled.Text`
-  color: #fff;
+  color: #808080;
   font-size: 14px;
+  text-decoration: underline;
 `;

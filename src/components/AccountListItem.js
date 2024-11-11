@@ -26,7 +26,7 @@ const Container = styled.View`
   flex-direction: row;
   align-items: center;
   padding: 7px;
-  border-bottom-width: 1px;
+  border-bottom-width: 0.3px;
   border-bottom-color: #ccc;
 `;
 
@@ -44,12 +44,11 @@ const Name = styled.Text`
 `;
 
 const ProfileButton = styled.TouchableOpacity`
-  background-color: #b08385;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 5px;
 `;
 
 const ButtonText = styled.Text`
-  color: #fff;
+  color: #808080;
   font-size: 14px;
+  text-decoration: underline;
 `;

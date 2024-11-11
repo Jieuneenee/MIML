@@ -23,7 +23,7 @@ const AlbumCover = styled.Image`
   height: 300px;
   border-radius: 10px;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 0px;
 `;
 
 const Title = styled.Text`
@@ -44,7 +44,7 @@ const Artist = styled.Text`
 const ButtonContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 15px;
 `;
 
 const ActionButton = styled.TouchableOpacity`
@@ -66,13 +66,13 @@ const ButtonText = styled.Text`
 `;
 
 const PlayButton = styled.TouchableOpacity`
-  position: absolute;
-  bottom: 10px;
-  right: 20px;
   width: 60px;
-  height: 200px;
+  height: 60px;
   justify-content: center;
   align-items: center;
+  margin-top: -30px;
+  align-self: flex-end; /* 오른쪽으로 배치 */
+  margin-right: 20px; /* 오른쪽 여백 */
 `;
 
 const PlayButtonImage = styled.Image`

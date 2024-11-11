@@ -82,14 +82,56 @@ const App = () => {
           component={TestIcon}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Following" component={FollowingScreen} />
-        <Stack.Screen name="Followers" component={FollowersScreen} />
+        <Stack.Screen
+          name="Following"
+          component={FollowingScreen}
+          options={{
+            headerTitle: false,
+            headerStyle: {
+              backgroundColor: '#000',
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerTintColor: '#FFFFFF',
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="Followers"
+          component={FollowersScreen}
+          options={{
+            headerTitle: false,
+            headerStyle: {
+              backgroundColor: '#000',
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerTintColor: '#FFFFFF',
+            headerBackTitleVisible: false,
+          }}
+        />
         <Stack.Screen
           name="OtherProfile"
           component={OtherProfileScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Detail" component={SongDetailScreen} />
+        <Stack.Screen
+          name="Detail"
+          component={SongDetailScreen}
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#222',
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerTintColor: '#FFFFFF',
+            headerBackTitleVisible: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
