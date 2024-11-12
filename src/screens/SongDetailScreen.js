@@ -71,8 +71,8 @@ const PlayButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   margin-top: -30px;
-  align-self: flex-end; /* 오른쪽으로 배치 */
-  margin-right: 20px; /* 오른쪽 여백 */
+  align-self: flex-end;
+  margin-right: 10px;
 `;
 
 const PlayButtonImage = styled.Image`
@@ -80,7 +80,7 @@ const PlayButtonImage = styled.Image`
   height: 100px;
 `;
 
-const MusicScreen = () => {
+const SongDetailScreen = () => {
   const openSpotify = () => {
     Linking.openURL(dummyData.spotify_url);
   };
@@ -111,4 +111,4 @@ const MusicScreen = () => {
   );
 };
 
-export default MusicScreen;
+export default SongDetailScreen;

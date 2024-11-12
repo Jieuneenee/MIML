@@ -12,7 +12,6 @@ import SearchScreen from './src/screens/SearchScreen';
 import AddPostScreen from './src/screens/AddPostScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
 import FollowingScreen from './src/screens/FollowingScreen';
 import FollowersScreen from './src/screens/FollowersScreen';
 import OtherProfileScreen from './src/screens/OtherProfileScreen';
@@ -75,11 +74,6 @@ const App = () => {
         <Stack.Screen
           name="Main"
           component={MainTabNavigator}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen // 아이콘 테스트용
-          name="TestIcon"
-          component={TestIcon}
           options={{headerShown: false}}
         />
         <Stack.Screen
