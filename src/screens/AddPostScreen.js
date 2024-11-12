@@ -71,25 +71,25 @@ const AddPostScreen = ({navigation, userId}) => {
     // 더미 데이터 설정
     const dummyData = [
       {
-        id: 1,
         title: 'Song 1',
         artist: 'Artist 1',
         album_cover_url:
           'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
+        uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF"
       },
       {
-        id: 2,
         title: 'Song 2',
         artist: 'Artist 2',
         album_cover_url:
           'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
+          uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF",
       },
       {
-        id: 3,
         title: 'Song 3',
         artist: 'Artist 3',
         album_cover_url:
           'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
+        uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF",
       },
     ];
 
