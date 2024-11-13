@@ -42,7 +42,7 @@ const data = [
   },
   {
     id: '3',
-    name: 'Bob',
+    name: 'Charlie',
     profileImage:
       'https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg',
     Song: [
@@ -79,7 +79,7 @@ const Header = styled.Text`
 const ListContainer = styled.View`
   flex: 1;
   background-color: #fedede;
-  padding: 20px;
+  padding: 8px;
   border-radius: 15px;
   margin-top: -15px;
 `;
@@ -90,6 +90,7 @@ const Card = styled.View`
   margin-bottom: 20px;
   flex-direction: row;
   align-items: flex-start;
+  margin-left: ${({MyId}) => (MyId ? '100px' : '0')};
 `;
 
 const ProfileImage = styled.Image`
@@ -118,7 +119,8 @@ const SongBox = styled.View`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0px;
-  width: 100%;
+  width: 230px;
+  height: 60px;
 `;
 
 const AlbumCover = styled.Image`
@@ -145,7 +147,7 @@ const RowContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: 5px;
+  margin-top: 3px;
 `;
 
 const DateText = styled.Text`
@@ -161,6 +163,7 @@ const ReactionButton = styled.TouchableOpacity`
   border-radius: 10px;
   width: 50px;
   justify-content: space-around;
+  margin-right: ${({MyId}) => (MyId ? '-3px' : '27px')};
 `;
 
 const ReactionIcon = styled.Text`
@@ -187,6 +190,7 @@ const MusicPlayButton = styled.Image`
   width: 80px;
   height: 80px;
 `;
+
 const SongCard = ({item}) => {
   const [reactionCount, setReactionCount] = useState(item.Song[0].reaction);
 
@@ -199,10 +203,15 @@ const SongCard = ({item}) => {
   };
 
   return (
-    <Card>
-      <ProfileImage source={{uri: item.profileImage}} />
+    <Card MyId={item.id === '2'}>
+      {/* 특정 id에서 조건부 렌더링 - 일단은 2로 테스트함 */}
+      {/* 특정 id에서 프로필 사진 렌더링X */}
+      {item.id !== '2' && item.profileImage ? (
+        <ProfileImage source={{uri: item.profileImage}} />
+      ) : null}
       <ContentContainer>
-        <UserName>{item.name}</UserName>
+        {/* 특정 id에서 name 렌더링 하지 않음 */}
+        {item.id !== '2' && <UserName>{item.name}</UserName>}
         <SongBox>
           <AlbumCover source={{uri: item.Song[0].album_cover_url}} />
           <SongInfo>
@@ -230,7 +239,7 @@ const SongCard = ({item}) => {
               minute: '2-digit',
             })}
           </DateText>
-          <ReactionButton onPress={handleReaction}>
+          <ReactionButton onPress={handleReaction} MyId={item.id === '2'}>
             <ReactionIcon>♥️</ReactionIcon>
             <ReactionText>{reactionCount}</ReactionText>
           </ReactionButton>

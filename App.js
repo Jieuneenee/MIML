@@ -129,7 +129,17 @@ const App = () => {
         <Stack.Screen
           name="OtherProfile"
           component={OtherProfileScreen}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#000',
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerTintColor: '#FFFFFF',
+            headerBackTitleVisible: false,
+          }}
         />
         <Stack.Screen
           name="Detail"
