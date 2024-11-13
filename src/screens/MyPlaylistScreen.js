@@ -8,24 +8,24 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import RenderSongs from '../components/renderSongs.js';
 
 import {fetchTodayPlaylistData} from '../utils/fetchTodayPlaylistData.js';
+import RenderPlaylist from '../components/renderPlaylist.js';
 
-const MyPlaylistScreen = ({navigation}) => {
+const TodayPlaylistScreen = ({navigation}) => {
   // 각 차트 데이터를 별도로 관리할 상태
   const [playlistData, setPlaylistData] = useState([]);
   const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
   const [selectedSong, setSelectedSong] = useState([]); // selectedSong 상태 관리
 
-  // 컴포넌트가 처음 렌더링될 때
+  // 컴포넌트가 처음 렌더링될 때 'daily' 차트 데이터를 불러옵니다.
   useEffect(() => {
     fetchData();
-  }, []);
+  }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
 
   const fetchData = async () => {
     try {
-      const dailyData = await fetchTodayPlaylistData(); // 나중에 MyPlaylist API로 바꾸기!!
+      const dailyData = await fetchTodayPlaylistData(); // API 함수 호출
       setPlaylistData(dailyData);
       console.log(`fetchData() 호출됨... 오늘의 플레이리스트`);
     } catch (error) {
@@ -68,31 +68,19 @@ const MyPlaylistScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <TouchableOpacity onPress={handleBackPress}>
-          <Text style={styles.buttonText}>뒤로가기</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.pop();
+          }}>
+          <Text style={styles.gobackButton}>뒤로가기</Text>
         </TouchableOpacity>
         <Text style={styles.title2}>나만의 PlayList</Text>
       </View>
 
-      {/* 전체 선택/선택 해제 버튼 */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={allButtonStyle}
-          onPress={toggleAllSelectButton}>
-          {allButton && <Text style={styles.checkmark}>✔</Text>}
-          {/* 체크 표시 */}
-        </TouchableOpacity>
-        <Text style={styles.text}>{allButton ? '선택 해제' : '전체 선택'}</Text>
-      </View>
-
       {/* 선택된 차트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
-      <RenderSongs
+      <RenderPlaylist
         chartType={'playlist'}
-        allButton={allButton} // 전체선택 상태
-        setAllButton={setAllButton} // 전체선택 버튼 상태 변경 함수
-        selectedSong={selectedSong}
-        setSelectedSong={setSelectedSong}
         dailyChartData={[]}
         weeklyChartData={[]}
         monthlyChartData={[]}
@@ -112,6 +100,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // 요소들을 가로로 나란히 배치
     justifyContent: 'flex-start', // 왼쪽 정렬
   },
+  gobackButton: {
+    color: 'white', // 글씨색을 흰색으로 설정
+    fontSize: 14,
+    marginTop: 40,
+    marginLeft: 10,
+  },
   title1: {
     color: 'white',
     fontSize: 20,
@@ -121,8 +115,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 30,
     fontWeight: 'bold',
-    marginTop: 30,
-    marginLeft: 60,
+    marginTop: 20,
+    marginLeft: 40,
     marginBottom: 28,
     alignItems: 'center',
   },
@@ -153,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPlaylistScreen;
+export default TodayPlaylistScreen;

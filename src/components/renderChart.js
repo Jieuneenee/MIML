@@ -13,7 +13,7 @@ import {
 import uuid from 'react-native-uuid';
 
 // 차트를 렌더링하는 함수
-const renderChart = ({
+const RenderChart = ({
   chartType,
   dailyChartData,
   weeklyChartData,
@@ -84,17 +84,19 @@ const renderChart = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 49,
+    marginLeft: 20,
   },
   songContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
     backgroundColor: '#111111', // 어두운 배경
   },
   rank: {
     color: 'white',
-    fontSize: 16,
-    marginRight: 10,
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    marginRight: 20,
   },
   image: {
     width: 59,
@@ -121,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default renderChart;
+export default RenderChart;

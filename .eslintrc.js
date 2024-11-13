@@ -10,13 +10,17 @@ module.exports = {
   extends: [
     'eslint:recommended', // 기본 ESLint 권장 규칙 사용
     'plugin:react/recommended', // React 관련 권장 규칙 사용
+    //'plugin:react-hooks/recommended', // React Hooks 권장 규칙 사용
   ],
   settings: {
     react: {
       version: 'detect', // React 버전을 자동으로 감지합니다.
     },
   },
+  plugins: ['react-hooks'],
   rules: {
     // 추가: 여기에 필요한 추가 규칙을 설정할 수 있습니다.
+    'react-hooks/rules-of-hooks': 'error', // 훅의 규칙을 준수하지 않으면 오류 표시
+    'react-hooks/exhaustive-deps': 'warn', // useEffect 의존성 배열 확인
   },
 };

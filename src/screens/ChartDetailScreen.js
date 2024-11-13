@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
+  ScrollView,
   StyleSheet,
   View,
   Text,
@@ -13,7 +14,7 @@ import RenderSongs from '../components/renderSongs.js';
 
 import {fetchChartData} from '../utils/fetchChartData.js';
 
-const ChartDetailScreen = ({route, navigation}) => {
+const ChartDetailScreen = ({navigation}) => {
   // 각 차트 데이터를 별도로 관리할 상태
   const [dailyChartData, setDailyChartData] = useState([]);
   const [weeklyChartData, setWeeklyChartData] = useState([]);
@@ -26,7 +27,7 @@ const ChartDetailScreen = ({route, navigation}) => {
   // 컴포넌트가 처음 렌더링될 때 'daily' 차트 데이터를 불러옵니다.
   useEffect(() => {
     fetchData('daily');
-  }, [chartType]); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
+  }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
 
   const fetchData = async chartType => {
     try {
@@ -76,10 +77,12 @@ const ChartDetailScreen = ({route, navigation}) => {
       }
 
       // 전체 선택 상태로 변경 시 해당 차트 데이터의 모든 곡 ID를 선택
-      setSelectedSong(chartData.map(song => song.id));
+      setSelectedSong(chartData.map(song => song.songId));
+      console.log(`전체 선택됨: ${selectedSong.length}곡`);
     } else {
       // 전체 선택 해제 시 모든 곡 선택 해제
       setSelectedSong([]);
+      console.log(`전체 선택 해제됨: ${selectedSong.length}곡`);
     }
   };
 
@@ -99,8 +102,8 @@ const ChartDetailScreen = ({route, navigation}) => {
 
   // 차트 타입 버튼 스타일 정의(이걸 아예 StyleSheet으로 바꿀 순 없나..?)
   const selectedButtonStyle = {
-    width: 94,
-    height: 35,
+    width: 100,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 1000,
@@ -109,8 +112,8 @@ const ChartDetailScreen = ({route, navigation}) => {
   };
 
   const unselectedButtonStyle = {
-    width: 68,
-    height: 35,
+    width: 70,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 1000,
@@ -123,8 +126,11 @@ const ChartDetailScreen = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <TouchableOpacity onPress={handleBackPress}>
-          <Text style={styles.buttonText}>뒤로가기</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.pop();
+          }}>
+          <Text style={styles.gobackButton}>뒤로가기</Text>
         </TouchableOpacity>
         <Text style={styles.title2}>Music Chart</Text>
       </View>
@@ -163,29 +169,15 @@ const ChartDetailScreen = ({route, navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {/* 전체 선택/선택 해제 버튼 */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={allButtonStyle}
-          onPress={toggleAllSelectButton}>
-          {allButton && <Text style={styles.checkmark}>✔</Text>}
-          {/* 체크 표시 */}
-        </TouchableOpacity>
-        <Text style={styles.text}>{allButton ? '선택 해제' : '전체 선택'}</Text>
-      </View>
-
       {/* 선택된 차트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
       <RenderSongs
         chartType={chartType}
-        allButton={allButton} // 전체선택 상태
-        setAllButton={setAllButton} // 전체선택 버튼 상태 변경 함수
-        selectedSong={selectedSong}
-        setSelectedSong={setSelectedSong}
         dailyChartData={dailyChartData}
         weeklyChartData={weeklyChartData}
         monthlyChartData={monthlyChartData}
         yearlyChartData={yearlyChartData}
+        playlistData={[]}
       />
     </View>
   );
@@ -199,6 +191,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row', // 요소들을 가로로 나란히 배치
     justifyContent: 'flex-start', // 왼쪽 정렬
+    marginTop: 20,
   },
   title1: {
     color: 'white',
@@ -237,6 +230,12 @@ const styles = StyleSheet.create({
     color: 'white', // 글씨색을 흰색으로 설정
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  gobackButton: {
+    color: 'white', // 글씨색을 흰색으로 설정
+    fontSize: 14,
+    marginTop: 15,
+    marginLeft: 10,
   },
 });
 

@@ -12,7 +12,7 @@ import {
 import uuid from 'react-native-uuid';
 
 // 노래를 렌더링하는 함수
-const RenderSongs = ({
+const RenderPlaylist = ({
   chartType,
   dailyChartData,
   weeklyChartData,
@@ -28,7 +28,7 @@ const RenderSongs = ({
     // 차트 타입이 변경될 때 전체선택 버튼 해제
     setAllButton(false); // 전체선택 버튼을 해제 상태로 설정
     setSelectedSong({}); // 선택된 노래 초기화
-  }, [chartType]); // chartType이 변경될 때마다 실행
+  }, []); // chartType이 변경될 때마다 실행
 
   let data =
     chartType === 'daily'
@@ -49,7 +49,7 @@ const RenderSongs = ({
   let dataWithIds = data.map((item, index) => ({
     ...item,
     //id: uuid.v4(), // 고유 ID를 각 항목에 추가 -> 이거 쓰면... id가 랜덤이라 리렌더링 문제 발생! id 넘겨달라고 해야함!!
-    rank: index + 1, // 1부터 시작하는 순위 추가
+    //rank: index + 1, // 1부터 시작하는 순위 추가
   }));
 
   // 전체선택 버튼 스타일
@@ -126,9 +126,6 @@ const RenderSongs = ({
         // 이미 선택된 노래라면
         delete newSelectedSongs[songId];
         setAllButton(false); // 전체선택 버튼 해제
-        /*데이터 잘 들어가고 삭제되는지 확인용*/
-        console.log(`노래 선택 해제됨: ${songId}`);
-        console.log(`선택된 노래 수: ${Object.keys(newSelectedSongs).length}`);
       } else {
         // 선택되지 않은 노래라면
         newSelectedSongs[songId] = true;
@@ -257,6 +254,11 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 10, // 버튼과 텍스트 사이의 간격을 조금만 띄움
   },
+  text: {
+    fontSize: 14,
+    color: 'white',
+    marginLeft: 5, // 버튼과 텍스트 사이의 간격을 조금만 띄움
+  },
   selectedCircle: {
     backgroundColor: '#4CAF50',
     borderColor: 'green',
@@ -316,4 +318,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderSongs;
+export default RenderPlaylist;

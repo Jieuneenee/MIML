@@ -14,6 +14,7 @@ import moment from 'moment';
 import {fetchChartData} from '../utils/fetchChartData.js';
 
 import renderChart from '../components/renderChart.js';
+import RenderChart from '../components/renderChart.js';
 
 const ChartScreen = ({navigation}) => {
   const [currentDate, setCurrentDate] = useState('');
@@ -92,8 +93,8 @@ const ChartScreen = ({navigation}) => {
 
   // 차트 타입 버튼 스타일 정의(이걸 아예 StyleSheet으로 바꿀 순 없나..?)
   const selectedButtonStyle = {
-    width: 94,
-    height: 35,
+    width: 100,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 1000,
@@ -102,8 +103,8 @@ const ChartScreen = ({navigation}) => {
   };
 
   const unselectedButtonStyle = {
-    width: 68,
-    height: 35,
+    width: 70,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 1000,
@@ -183,13 +184,13 @@ const ChartScreen = ({navigation}) => {
         </View>
 
         {/* 선택된 차트를 화면에 렌더링 */}
-        {renderChart({
-          chartType,
-          dailyChartData: getLimitedData(dailyChartData),
-          weeklyChartData: getLimitedData(weeklyChartData),
-          monthlyChartData: getLimitedData(monthlyChartData),
-          yearlyChartData: getLimitedData(yearlyChartData),
-        })}
+        <RenderChart
+          chartType={chartType}
+          dailyChartData={getLimitedData(dailyChartData)}
+          weeklyChartData={getLimitedData(weeklyChartData)}
+          monthlyChartData={getLimitedData(monthlyChartData)}
+          yearlyChartData={getLimitedData(yearlyChartData)}
+        />
 
         {/* 플레이리스트 렌더링 */}
         <Text style={styles.title4}>Playlist</Text>
@@ -225,23 +226,27 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row', // 요소들을 가로로 나란히 배치
     justifyContent: 'flex-start', // 왼쪽 정렬
+    marginLeft: 20,
   },
   title1: {
     color: 'white',
     fontSize: 20,
     marginRight: 10,
+    marginLeft: 20,
+    marginTop: 20,
   },
   title2: {
     color: 'white',
     fontSize: 30,
     fontWeight: 'bold',
-    marginRight: 10,
+    marginRight: 5,
   },
   title3: {
     color: 'white',
     fontSize: 17,
     marginRight: 10,
-    marginLeft: 150,
+    marginLeft: 135,
+    marginTop: 12,
   },
   title4: {
     color: 'white',
