@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 10,
     marginBottom: 30,
+    marginLeft: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
