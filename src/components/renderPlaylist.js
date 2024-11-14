@@ -1,3 +1,9 @@
+/*
+
+플레이리스트 노래 목록을 렌더링 해주는 컴포넌트
+순위 O, 노래 선택 버튼 O
+
+*/
 import React, {useState, useMemo, useEffect} from 'react';
 import {
   StyleSheet,
@@ -158,14 +164,27 @@ const RenderPlaylist = ({
     setAllButton(false);
   };
 
+  // Delete Songs 버튼 클릭 시
+  const handleDeleteSongs = () => {
+    console.log('Delete Songs 클릭됨');
+    setSelectedSong({});
+    setAllButton(false);
+  };
+
   return (
     <View>
-      {/* AddtoPlaylist 버튼을 FlatList 위에 고정 */}
+      {/* deleteFromPlaylist 버튼을 FlatList 위에 고정 */}
       {Object.keys(selectedSong).length > 0 && (
         <TouchableOpacity
           style={styles.addButton}
-          onPress={handleAddToPlaylist}>
-          <Text style={styles.addButtonText}>Add to Playlist</Text>
+          onPress={
+            chartType === 'todayPlaylist'
+              ? handleAddToPlaylist
+              : handleDeleteSongs
+          }>
+          <Text style={styles.addButtonText}>
+            {chartType === 'todayPlaylist' ? 'Add to Playlist' : 'Delete Songs'}
+          </Text>
         </TouchableOpacity>
       )}
       <FlatList

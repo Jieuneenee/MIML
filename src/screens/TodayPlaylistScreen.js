@@ -80,7 +80,7 @@ const TodayPlaylistScreen = ({navigation}) => {
       {/* 선택된 차트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
       <RenderPlaylist
-        chartType={'playlist'}
+        chartType={'todayPlaylist'}
         dailyChartData={[]}
         weeklyChartData={[]}
         monthlyChartData={[]}
