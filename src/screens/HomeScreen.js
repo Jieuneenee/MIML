@@ -58,6 +58,42 @@ const data = [
       },
     ],
   },
+  {
+    id: '4',
+    name: 'Charlie',
+    profileImage:
+      'https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg',
+    Song: [
+      {
+        title: 'purr',
+        artist: 'purrcat',
+        album_cover_url:
+          'https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg',
+        shared_at: '2024-10-12T14:01:56',
+        reaction: 5,
+        spotify_url: 'https://open.spotify.com/track/4Q1mkQI9zKjEPsbI19hpsN',
+        uri: 'spotify:track:4Q1mkQI9zKjEPsbI19hpsN',
+      },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Charlie',
+    profileImage:
+      'https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg',
+    Song: [
+      {
+        title: 'purr',
+        artist: 'purrcat',
+        album_cover_url:
+          'https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg',
+        shared_at: '2024-10-12T14:01:56',
+        reaction: 5,
+        spotify_url: 'https://open.spotify.com/track/4Q1mkQI9zKjEPsbI19hpsN',
+        uri: 'spotify:track:4Q1mkQI9zKjEPsbI19hpsN',
+      },
+    ],
+  },
 ];
 
 const Container = styled.View`
@@ -157,13 +193,15 @@ const DateText = styled.Text`
 
 const ReactionButton = styled.TouchableOpacity`
   flex-direction: row;
+  position: absolute;
   align-items: center;
   background-color: #d19e9e;
   padding: 2px 10px;
   border-radius: 10px;
   width: 50px;
   justify-content: space-around;
-  margin-right: ${({MyId}) => (MyId ? '-3px' : '27px')};
+  left: 175px;
+  top: 2px;
 `;
 
 const ReactionIcon = styled.Text`
@@ -239,7 +277,7 @@ const SongCard = ({item}) => {
               minute: '2-digit',
             })}
           </DateText>
-          <ReactionButton onPress={handleReaction} MyId={item.id === '2'}>
+          <ReactionButton onPress={handleReaction}>
             <ReactionIcon>♥️</ReactionIcon>
             <ReactionText>{reactionCount}</ReactionText>
           </ReactionButton>
