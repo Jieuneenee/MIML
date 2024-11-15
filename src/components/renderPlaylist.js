@@ -28,12 +28,12 @@ const RenderPlaylist = ({
 }) => {
   console.log('노래렌더링 함수입니다...');
   const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
-  const [selectedSong, setSelectedSong] = useState({}); // selectedSong 상태 관리
+  const [selectedSong, setSelectedSong] = useState(null); // selectedSong 상태 관리
 
   useEffect(() => {
     // 차트 타입이 변경될 때 전체선택 버튼 해제
     setAllButton(false); // 전체선택 버튼을 해제 상태로 설정
-    setSelectedSong({}); // 선택된 노래 초기화
+    setSelectedSong(null); // 선택된 노래 초기화
   }, []); // chartType이 변경될 때마다 실행
 
   let data =
@@ -127,22 +127,21 @@ const RenderPlaylist = ({
   // 노래 선택 함수
   const handleSongSelect = songId => {
     setSelectedSong(prevState => {
-      const newSelectedSongs = {...prevState};
-      if (newSelectedSongs[songId]) {
-        // 이미 선택된 노래라면
-        delete newSelectedSongs[songId];
-        setAllButton(false); // 전체선택 버튼 해제
+      if (prevState === songId) {
+        // 이미 선택된 노래라면 선택 해제
+        console.log(`노래 선택 해제됨: ${songId}`);
+        return null;
       } else {
-        // 선택되지 않은 노래라면
-        newSelectedSongs[songId] = true;
+        // 새로운 노래 선택
+        console.log(`노래 선택됨: ${songId}`);
+        return songId;
       }
-      return newSelectedSongs;
     });
   };
 
   // 노래 버튼 스타일링 함수
   const getButtonStyle = songId => {
-    const isSelected = selectedSong[songId]; // 선택된 노래 확인
+    const isSelected = selectedSong === songId ? true : false; // 선택된 노래 확인
     return {
       width: 20,
       height: 20,
@@ -174,7 +173,7 @@ const RenderPlaylist = ({
   return (
     <View>
       {/* deleteFromPlaylist 버튼을 FlatList 위에 고정 */}
-      {Object.keys(selectedSong).length > 0 && (
+      {selectedSong !== null && (
         <TouchableOpacity
           style={styles.addButton}
           onPress={
@@ -190,25 +189,16 @@ const RenderPlaylist = ({
       <FlatList
         data={dataWithIds}
         keyExtractor={item => item.songId}
-        ListHeaderComponent={
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={allButtonStyle}
-              onPress={toggleAllSelectButton}>
-              {allButton && <Text style={styles.checkmark}>✔</Text>}
-              {/* 체크 표시 */}
-            </TouchableOpacity>
-            <Text style={styles.allSelectedText}>
-              {allButton ? '선택 해제' : '전체 선택'}
-            </Text>
-          </View>
-        }
         renderItem={({item}) => (
           <View style={styles.container}>
             {/* 동그라미 선택 버튼 */}
             <TouchableOpacity
               style={getButtonStyle(item.songId)}
-              onPress={() => handleSongSelect(item.songId)}></TouchableOpacity>
+              onPress={() => handleSongSelect(item.songId)}>
+              {selectedSong === item.songId && ( // 선택된 노래일 때만 체크 표시
+                <Text style={styles.checkmark}>✔</Text>
+              )}
+            </TouchableOpacity>
 
             {/* 앨범 사진 */}
             <Image

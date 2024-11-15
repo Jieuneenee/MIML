@@ -1,3 +1,9 @@
+/*
+
+차트 화면에 4개씩 노래 목록을 렌더링 해주는 컴포넌트
+순위 O, 노래 선택 버튼 X,
+
+*/
 import React from 'react';
 import {
   StyleSheet,
