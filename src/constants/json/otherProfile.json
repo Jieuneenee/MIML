@@ -1,13 +1,18 @@
 {
-  "userId": 1,
-  "name": "Jane Doe",
-  "profileImage": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg",
-  "followers": 120,
-  "playlist": [
+  "user": {
+    "email": "park1@example.com",
+    "name": "park1",
+    "profile_image_url": null,
+    "createdAt": "2024-11-06T10:47:04.634468"
+  },
+  "is_following": true,
+  "shared_songs": [
     {
-      "albumCover": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg",
-      "title": "Song Title 1",
-      "artist": "Artist 1"
+      "title": "Olaf",
+      "artist": "pH-1",
+      "album": "HALO",
+      "spotify_url": "https://open.spotify.com/track/4AjEpBzBpOBtZQxHNgDj2p",
+      "sharedAt": "2024-11-06T11:03:22.031086"
     }
   ]
 }

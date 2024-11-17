@@ -11,8 +11,7 @@ const dummyData = [
   {
     id: '2',
     name: 'Bob',
-    profileImage:
-      'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
+    profileImage: null,
   },
 ];
 
@@ -65,7 +64,13 @@ const SearchScreen = () => {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <UserContainer>
-            <ProfileImage source={{uri: item.profileImage}} />
+            <ProfileImage
+              source={{
+                uri: item.profileImage
+                  ? item.profileImage // 유효한 URL
+                  : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
+              }}
+            />
             <UserInfo>
               <UserName>{item.name}</UserName>
               <ProfileButton>

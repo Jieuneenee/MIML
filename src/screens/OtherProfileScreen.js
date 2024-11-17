@@ -1,23 +1,35 @@
-import React from 'react';
-import {useRoute} from '@react-navigation/native'; // useRoute로 파라미터 받기
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {Text} from 'react-native';
-import profile from '../constants/json/otherProfile.json'; // followersData 가져오기
+import profile from '../constants/json/otherProfile.json';
 
 const OtherProfileScreen = () => {
+  const [isFollowing, setIsFollowing] = useState(profile.is_following); // 더미데이터에서 팔로우 여부 가져오기
+
+  const handleFollowToggle = () => {
+    setIsFollowing(prev => !prev);
+  };
+
   return (
     <Container>
-      <ProfileImage source={{uri: profile.profileImage}} />
-      <UserName>{profile.name}</UserName>
-      <FollowButton>
-        <ButtonText>Follow</ButtonText>
+      <ProfileImage
+        source={{
+          uri: profile.user.profile_image_url
+            ? profile.user.profile_image_url
+            : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
+        }}
+      />
+      <UserName>{profile.user.name}</UserName>
+      <FollowButton onPress={handleFollowToggle}>
+        <ButtonText>{isFollowing ? 'Unfollow' : 'Follow'}</ButtonText>
       </FollowButton>
       <PlaylistTitle>Today's Shared Song</PlaylistTitle>
       <PlaylistContainer>
-        <AlbumCover source={{uri: profile.playlist[0].albumCover}} />
+        <AlbumCover
+          source={{uri: profile.shared_songs[0]?.spotify_url || ''}}
+        />
         <SongDetails>
-          <SongTitle>{profile.playlist[0].title}</SongTitle>
-          <SongArtist>{profile.playlist[0].artist}</SongArtist>
+          <SongTitle>{profile.shared_songs[0]?.title}</SongTitle>
+          <SongArtist>{profile.shared_songs[0]?.artist}</SongArtist>
         </SongDetails>
       </PlaylistContainer>
     </Container>
@@ -54,6 +66,7 @@ const FollowButton = styled.TouchableOpacity`
   margin: 0 10px;
   border-radius: 5px;
   height: 40px;
+  justify-content: center;
 `;
 
 const ButtonText = styled.Text`

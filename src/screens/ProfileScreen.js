@@ -15,7 +15,13 @@ const ProfileScreen = ({navigation}) => {
         <LogoutText>Logout</LogoutText>
       </LogoutButton>
       <ScrollContainer>
-        <ProfileImage source={{uri: ownProfile.profileImage}} />
+        <ProfileImage
+          source={{
+            uri: ownProfile.profileImage
+              ? ownProfile.profileImage
+              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
+          }}
+        />
         <UserName>{ownProfile.name}</UserName>
         <ButtonContainer>
           <FollowButton onPress={() => navigation.navigate('Following')}>
