@@ -185,6 +185,7 @@ const ChartDetailScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 10,
     backgroundColor: '#111111', // 어두운 배경
   },
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around', // 버튼들 간의 간격을 균등하게 배치
     width: '100%', // 부모 요소가 화면 전체를 차지하도록 설정
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 10,
   },
   buttonText: {
     color: 'white', // 글씨색을 흰색으로 설정

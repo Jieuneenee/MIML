@@ -93,6 +93,7 @@ const TodayPlaylistScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 10,
     backgroundColor: '#111111', // 어두운 배경
   },
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
     marginLeft: 40,
-    marginBottom: 28,
+    marginBottom: 10,
     alignItems: 'center',
   },
   buttonContainer: {

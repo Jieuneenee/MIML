@@ -163,6 +163,8 @@ const RenderSongs = ({
     setAllButton(false);
   };
 
+  const ItemSeparator = () => <View style={{height: 16}} />;
+
   return (
     <View>
       {/* AddtoPlaylist 버튼을 FlatList 위에 고정 */}
@@ -175,13 +177,18 @@ const RenderSongs = ({
       )}
       <FlatList
         data={dataWithIds}
-        keyExtractor={item => item.songId}
+        keyExtractor={item => String(item.songId)}
+        contentContainerStyle={{paddingBottom: 100}} // 마지막 항목 아래 여백 추가
         renderItem={({item}) => (
           <View style={styles.container}>
             {/* 동그라미 선택 버튼 */}
             <TouchableOpacity
               style={getButtonStyle(item.songId)}
-              onPress={() => handleSongSelect(item.songId)}></TouchableOpacity>
+              onPress={() => handleSongSelect(item.songId)}>
+              {selectedSong === item.songId && ( // 선택된 노래일 때만 체크 표시
+                <Text style={styles.checkmark}>✔</Text>
+              )}
+            </TouchableOpacity>
 
             {/* 앨범 사진 */}
             <Image
@@ -194,8 +201,18 @@ const RenderSongs = ({
 
             {/* 노래 제목과 가수 이름 */}
             <View style={styles.textContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.title}>{item.artist}</Text>
+              <Text
+                style={styles.title}
+                numberOfLines={1} // 한 줄로 제한
+                ellipsizeMode="tail">
+                {item.title}
+              </Text>
+              <Text
+                style={styles.title}
+                numberOfLines={1} // 한 줄로 제한
+                ellipsizeMode="tail">
+                {item.artist}
+              </Text>
             </View>
             {/* 스포티파이 버튼 */}
             <TouchableOpacity onPress={() => console.log('스포티파이재생버튼')}>
@@ -217,7 +234,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 7,
     backgroundColor: '#111111', // 어두운 배경
   },
   circleButton: {
