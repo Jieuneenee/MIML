@@ -66,13 +66,6 @@ const LoginScreen = ({navigation}) => (
     <InputField placeholder="Email" keyboardType="email-address" />
     <InputField placeholder="Password" secureTextEntry />
 
-    <Button //아이콘 테스트용
-      onPress={() => {
-        navigation.navigate('TestIcon');
-      }}>
-      <ButtonText>test</ButtonText>
-    </Button>
-
     <Button
       onPress={() => {
         navigation.navigate('Main');

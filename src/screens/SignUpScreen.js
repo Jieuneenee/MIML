@@ -67,7 +67,6 @@ const SignUpScreen = ({navigation}) => (
     <InputField placeholder="Password" secureTextEntry />
     <InputField placeholder="Repeat Password" secureTextEntry />
     <InputField placeholder="Name" />
-    <InputField placeholder="Nickname" />
     <Button
       onPress={() => {
         /* 회원가입 로직 */
