@@ -5,6 +5,8 @@ import {
   View,
   Text,
   TouchableOpacity,
+  SafeAreaView,
+  FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
@@ -132,80 +134,96 @@ const ChartScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* 차트 렌더링 */}
-      <Text style={styles.title1}>오늘 {currentDate} 기준</Text>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title2}>Music Chart</Text>
-        <TouchableOpacity onPress={goToDetailScreen}>
-          <Text style={styles.title3}>전체보기</Text>
-        </TouchableOpacity>
-      </View>
+    <FlatList
+      data={[]}
+      renderItem={null}
+      ListEmptyComponent={
+        <>
+          <View style={styles.container}>
+            {/* 차트 렌더링 */}
+            <Text style={styles.title1}>오늘 {currentDate} 기준</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title2}>Music Chart</Text>
+              <TouchableOpacity onPress={goToDetailScreen}>
+                <Text style={styles.title3}>전체보기</Text>
+              </TouchableOpacity>
+            </View>
 
-      {/* 버튼들 */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={
-            chartType === 'daily' ? selectedButtonStyle : unselectedButtonStyle
-          }
-          onPress={() => handleChartSelect('daily')}>
-          <Text style={styles.buttonText}>Daily</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            chartType === 'weekly' ? selectedButtonStyle : unselectedButtonStyle
-          }
-          onPress={() => handleChartSelect('weekly')}>
-          <Text style={styles.buttonText}>Weekly</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            chartType === 'monthly'
-              ? selectedButtonStyle
-              : unselectedButtonStyle
-          }
-          onPress={() => handleChartSelect('monthly')}>
-          <Text style={styles.buttonText}>Monthly</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            chartType === 'yearly' ? selectedButtonStyle : unselectedButtonStyle
-          }
-          onPress={() => handleChartSelect('yearly')}>
-          <Text style={styles.buttonText}>Yearly</Text>
-        </TouchableOpacity>
-      </View>
+            {/* 버튼들 */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={
+                  chartType === 'daily'
+                    ? selectedButtonStyle
+                    : unselectedButtonStyle
+                }
+                onPress={() => handleChartSelect('daily')}>
+                <Text style={styles.buttonText}>Daily</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  chartType === 'weekly'
+                    ? selectedButtonStyle
+                    : unselectedButtonStyle
+                }
+                onPress={() => handleChartSelect('weekly')}>
+                <Text style={styles.buttonText}>Weekly</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  chartType === 'monthly'
+                    ? selectedButtonStyle
+                    : unselectedButtonStyle
+                }
+                onPress={() => handleChartSelect('monthly')}>
+                <Text style={styles.buttonText}>Monthly</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  chartType === 'yearly'
+                    ? selectedButtonStyle
+                    : unselectedButtonStyle
+                }
+                onPress={() => handleChartSelect('yearly')}>
+                <Text style={styles.buttonText}>Yearly</Text>
+              </TouchableOpacity>
+            </View>
 
-      {/* 선택된 차트를 화면에 렌더링 */}
-      <RenderChart
-        chartType={chartType}
-        dailyChartData={getLimitedData(dailyChartData)}
-        weeklyChartData={getLimitedData(weeklyChartData)}
-        monthlyChartData={getLimitedData(monthlyChartData)}
-        yearlyChartData={getLimitedData(yearlyChartData)}
-      />
+            {/* 선택된 차트를 화면에 렌더링 */}
+            <RenderChart
+              chartType={chartType}
+              dailyChartData={getLimitedData(dailyChartData)}
+              weeklyChartData={getLimitedData(weeklyChartData)}
+              monthlyChartData={getLimitedData(monthlyChartData)}
+              yearlyChartData={getLimitedData(yearlyChartData)}
+            />
 
-      {/* 플레이리스트 렌더링 */}
-      <Text style={styles.title4}>Playlist</Text>
-      <View style={styles.playlistContainer}>
-        <TouchableOpacity onPress={goTodayPlaylistScreen}>
-          <LinearGradient
-            colors={['#FF6F61', '#FF9B7F']}
-            style={playlistButtonStyle}>
-            <Text style={buttonTextStyle}>#Today</Text>
-            <Text style={buttonTextStyle}>PLAYLIST</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={goMyPlaylistScreen}>
-          <LinearGradient
-            colors={['#D19E9E', '#FDEEDE']}
-            style={playlistButtonStyle}>
-            <Text style={buttonTextStyle}>#나만의</Text>
-            <Text style={buttonTextStyle}>PLAYLIST</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-    </View>
+            {/* 플레이리스트 렌더링 */}
+            <ScrollView>
+              <Text style={styles.title4}>Playlist</Text>
+              <View style={styles.playlistContainer}>
+                <TouchableOpacity onPress={goTodayPlaylistScreen}>
+                  <LinearGradient
+                    colors={['#FF6F61', '#FF9B7F']}
+                    style={playlistButtonStyle}>
+                    <Text style={buttonTextStyle}>#Today</Text>
+                    <Text style={buttonTextStyle}>PLAYLIST</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={goMyPlaylistScreen}>
+                  <LinearGradient
+                    colors={['#D19E9E', '#FDEEDE']}
+                    style={playlistButtonStyle}>
+                    <Text style={buttonTextStyle}>#나만의</Text>
+                    <Text style={buttonTextStyle}>PLAYLIST</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </>
+      }
+    />
   );
 };
 

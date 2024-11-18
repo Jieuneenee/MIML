@@ -89,7 +89,7 @@ const RenderChart = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 49,
+    marginBottom: 40,
     marginLeft: 20,
   },
   songContainer: {

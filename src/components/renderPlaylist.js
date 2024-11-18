@@ -4,7 +4,7 @@
 순위 O, 노래 선택 버튼 O
 
 */
-import React, {useState, useMemo, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -27,13 +27,14 @@ const RenderPlaylist = ({
   playlistData,
 }) => {
   console.log('노래렌더링 함수입니다...');
-  const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
+  //const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
   const [selectedSong, setSelectedSong] = useState(null); // selectedSong 상태 관리
+  const [showAddButton, setShowAddButton] = useState(false); // Add to Playlist 버튼 표시 여부
 
   useEffect(() => {
     // 차트 타입이 변경될 때 전체선택 버튼 해제
-    setAllButton(false); // 전체선택 버튼을 해제 상태로 설정
     setSelectedSong(null); // 선택된 노래 초기화
+    setShowAddButton(false); // 버튼 초기화
   }, []); // chartType이 변경될 때마다 실행
 
   let data =
@@ -58,6 +59,7 @@ const RenderPlaylist = ({
     //rank: index + 1, // 1부터 시작하는 순위 추가
   }));
 
+  /*
   // 전체선택 버튼 스타일
   const allButtonStyle = {
     width: 20,
@@ -106,7 +108,7 @@ const RenderPlaylist = ({
   };
 
   // 선택 상태가 변경될 때 전체 선택 버튼 상태 업데이트 -> react hook 렌더링 오류...
-  /*useEffect(() => {
+  useEffect(() => {
     // 모든 곡이 선택되었으면 -> allButton 상태 true
     if (Object.keys(selectedSong).length === dataWithIds.length) {
       setAllButton(true);
@@ -130,10 +132,12 @@ const RenderPlaylist = ({
       if (prevState === songId) {
         // 이미 선택된 노래라면 선택 해제
         console.log(`노래 선택 해제됨: ${songId}`);
+        setShowAddButton(false); // 버튼 숨기기
         return null;
       } else {
         // 새로운 노래 선택
         console.log(`노래 선택됨: ${songId}`);
+        setShowAddButton(true); // 버튼 보이기
         return songId;
       }
     });
@@ -160,20 +164,22 @@ const RenderPlaylist = ({
     // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
     console.log('Add to Playlist 클릭됨');
     setSelectedSong({});
-    setAllButton(false);
+    setShowAddButton(false); // 버튼 숨기기
+    //setAllButton(false);
   };
 
   // Delete Songs 버튼 클릭 시
   const handleDeleteSongs = () => {
     console.log('Delete Songs 클릭됨');
     setSelectedSong({});
-    setAllButton(false);
+    setShowAddButton(false); // 버튼 숨기기
+    //setAllButton(false);
   };
 
   return (
     <View>
       {/* deleteFromPlaylist 버튼을 FlatList 위에 고정 */}
-      {selectedSong !== null && (
+      {showAddButton && (
         <TouchableOpacity
           style={styles.addButton}
           onPress={
