@@ -199,7 +199,12 @@ const RenderSongs = ({
             {/* 앨범 사진 */}
             <Image
               style={styles.image}
-              source={require('../asset/images/albumImage1.jpg')}
+              source={{
+                uri: item.albumImageUrl,
+              }}
+              onError={error =>
+                console.log('Image load error:', error.nativeEvent.error)
+              }
             />
 
             {/* 노래 순위 */}

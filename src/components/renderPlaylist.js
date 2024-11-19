@@ -208,10 +208,7 @@ const RenderPlaylist = ({
             </TouchableOpacity>
 
             {/* 앨범 사진 */}
-            <Image
-              style={styles.image}
-              source={require('../asset/images/albumImage1.jpg')}
-            />
+            <Image style={styles.image} source={{uri: item.albumImageUrl}} />
 
             {/* 노래 순위 */}
             <Text style={styles.rank}>{item.rank}</Text>

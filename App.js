@@ -14,7 +14,7 @@ import SearchScreen from './src/screens/SearchScreen';
 import AddPostScreen from './src/screens/AddPostScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
+//import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
 import TodayPlaylistScreen from './src/screens/TodayPlaylistScreen';
 import MyPlaylistScreen from './src/screens/MyPlaylistScreen';
 import FollowingScreen from './src/screens/FollowingScreen';
@@ -24,7 +24,6 @@ import SongDetailScreen from './src/screens/SongDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
 
 const MainTabNavigator = () => {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
