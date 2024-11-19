@@ -9,10 +9,14 @@ import {Keyboard} from 'react-native';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import ChartScreen from './src/screens/ChartScreen';
+import ChartDetailScreen from './src/screens/ChartDetailScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import AddPostScreen from './src/screens/AddPostScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import TestIcon from './src/screens/TestIcon'; // 아이콘 테스트용
+import TodayPlaylistScreen from './src/screens/TodayPlaylistScreen';
+import MyPlaylistScreen from './src/screens/MyPlaylistScreen';
 import FollowingScreen from './src/screens/FollowingScreen';
 import FollowersScreen from './src/screens/FollowersScreen';
 import OtherProfileScreen from './src/screens/OtherProfileScreen';
@@ -20,6 +24,7 @@ import SongDetailScreen from './src/screens/SongDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 const MainTabNavigator = () => {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
@@ -155,6 +160,26 @@ const App = () => {
             headerTintColor: '#FFFFFF',
             headerBackTitleVisible: false,
           }}
+        />
+        <Stack.Screen
+          name="Chart"
+          component={ChartScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ChartDetail"
+          component={ChartDetailScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TodayPlaylist"
+          component={TodayPlaylistScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="MyPlaylist"
+          component={MyPlaylistScreen}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
