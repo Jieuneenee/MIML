@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     position: 'absolute',
-    top: 680, // 화면 상단에서 10픽셀 떨어지게 위치
+    top: 430, // 화면 상단에서 10픽셀 떨어지게 위치
     left: '50%', // 가로 중앙
     transform: [{translateX: -100}], // 버튼 크기 (200px)로 가정하고 가운데 배치
     zIndex: 1, // 다른 요소들 위에 오도록 설정

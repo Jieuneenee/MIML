@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
     marginRight: 10,
-    marginLeft: 135,
+    marginLeft: 95,
     marginTop: 12,
   },
   title4: {
