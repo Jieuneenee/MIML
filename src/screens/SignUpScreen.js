@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
+import Toast from 'react-native-toast-message';
+import axios from 'axios';
+import {BASE_URL} from '../../env';
 
 const Container = styled(LinearGradient).attrs({
   colors: ['#dec4fc', '#d19e9e'],
@@ -60,25 +63,85 @@ const LinkText = styled.Text`
   font-weight: bold;
 `;
 
-const SignUpScreen = ({navigation}) => (
-  <Container>
-    <Title>Sign Up</Title>
-    <InputField placeholder="Email" keyboardType="email-address" />
-    <InputField placeholder="Password" secureTextEntry />
-    <InputField placeholder="Repeat Password" secureTextEntry />
-    <InputField placeholder="Name" />
-    <Button
-      onPress={() => {
-        /* 회원가입 로직 */
-      }}>
-      <ButtonText>Sign Up</ButtonText>
-    </Button>
-    <FooterButton onPress={() => navigation.navigate('Login')}>
-      <FooterText>
-        Already have an account? <LinkText>Login</LinkText>
-      </FooterText>
-    </FooterButton>
-  </Container>
-);
+const SignUpScreen = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [name, setName] = useState('');
+
+  const handleSignUp = async () => {
+    // 비밀버호와 비밀번호 확인이 일치하는지 확인
+    if (password !== repeatPassword) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: '비밀번호가 일치하지 않습니다.',
+      });
+      return;
+    }
+
+    try {
+      // 회원가입 요청
+      const response = await axios.post(`${BASE_URL}/auths/register`, {
+        email: email,
+        password: password,
+        name: name,
+      });
+
+      if (
+        response.data &&
+        response.data.msg === 'User registered successfully'
+      ) {
+        // 회원가입 성공 시
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: '회원가입 성공!',
+          text2: '로그인 화면으로 이동합니다.',
+        });
+        navigation.navigate('Login');
+      }
+    } catch (error) {
+      // 회원가입 실패 시
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: '사용자 이메일이 존재합니다.',
+      });
+    }
+  };
+
+  return (
+    <Container>
+      <Title>Sign Up</Title>
+      <InputField
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <InputField
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+      />
+      <InputField
+        placeholder="Repeat Password"
+        secureTextEntry
+        value={repeatPassword}
+        onChangeText={setRepeatPassword}
+      />
+      <InputField placeholder="Name" value={name} onChangeText={setName} />
+      <Button onPress={handleSignUp}>
+        <ButtonText>Sign Up</ButtonText>
+      </Button>
+      <FooterButton onPress={() => navigation.navigate('Login')}>
+        <FooterText>
+          Already have an account? <LinkText>Login</LinkText>
+        </FooterText>
+      </FooterButton>
+    </Container>
+  );
+};
 
 export default SignUpScreen;

@@ -255,7 +255,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
     marginRight: 10,
+<<<<<<< Updated upstream
     marginLeft: 135,
+=======
+    marginLeft: 95, // 지은
+>>>>>>> Stashed changes
     marginTop: 12,
   },
   title4: {

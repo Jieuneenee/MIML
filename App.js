@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Keyboard} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 // 스크린 컴포넌트 불러오기
 import LoginScreen from './src/screens/LoginScreen';
@@ -47,6 +48,7 @@ const MainTabNavigator = () => {
 
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
@@ -181,6 +183,7 @@ const App = () => {
           options={{headerShown: false}}
         />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 };
