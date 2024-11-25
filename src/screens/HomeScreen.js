@@ -4,6 +4,7 @@ import {FlatList, TouchableOpacity, Linking, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {BASE_URL} from '../../env';
+import {useFocusEffect} from '@react-navigation/native'; // useFocusEffect 임포트
 
 const SongCard = ({item, userId}) => {
   const [reactionCount, setReactionCount] = useState(
@@ -92,45 +93,48 @@ const SongCard = ({item, userId}) => {
   );
 };
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [userId, setUserId] = useState(null);
   const [feedData, setFeedData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(''); // errorMessage 상태 정의
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedUserId = await AsyncStorage.getItem('userId');
-        const token = await AsyncStorage.getItem('token');
+  useFocusEffect(
+    React.useCallback(() => {
+      // 페이지가 포커스를 받으면 데이터를 다시 가져오기
+      const fetchData = async () => {
+        try {
+          const storedUserId = await AsyncStorage.getItem('userId');
+          const token = await AsyncStorage.getItem('token');
 
-        if (!storedUserId || !token) {
-          setErrorMessage('User ID or Auth Token is missing.');
+          if (!storedUserId || !token) {
+            setErrorMessage('User ID or Auth Token is missing.');
+            setLoading(false);
+            return;
+          }
+
+          setUserId(parseInt(storedUserId, 10));
+
+          const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setFeedData(response.data);
+          if (response.data.length === 0) {
+            setErrorMessage('아직 공유된 노래가 없습니다'); // 데이터가 없으면 메시지 설정
+          }
+        } catch (error) {
+          setErrorMessage('공유된 노래가 없습니다'); // 에러 발생 시 메시지 설정
+        } finally {
           setLoading(false);
-          return;
         }
+      };
 
-        setUserId(parseInt(storedUserId, 10));
-
-        const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setFeedData(response.data);
-        if (response.data.length === 0) {
-          setErrorMessage('아직 공유된 노래가 없습니다'); // 데이터가 없으면 메시지 설정
-        }
-      } catch (error) {
-        setErrorMessage('공유된 노래가 없습니다'); // 에러 발생 시 메시지 설정
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+      fetchData();
+    }, []), // 빈 배열로 설정하여 한번만 실행되도록
+  );
 
   if (loading) {
     return <Text>Loading...</Text>; // 로딩 중 메시지
