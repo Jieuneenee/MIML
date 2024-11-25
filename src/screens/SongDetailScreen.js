@@ -97,7 +97,9 @@ const SongDetailScreen = ({route}) => {
           position: 'bottom',
           text1: '노래가 공유되었습니다.',
         });
-        navigation.navigate('Home');
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 2000);
       }
     } catch (error) {
       console.error('Error sharing song:', error);

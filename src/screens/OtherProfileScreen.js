@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../../env';
+import Toast from 'react-native-toast-message';
 
 const OtherProfileScreen = ({route}) => {
   const {userId} = route.params; // userId 받아오기
@@ -44,10 +45,80 @@ const OtherProfileScreen = ({route}) => {
   if (!profile) {
     return <LoadingText>Loading...</LoadingText>;
   }
+  const handleFollowToggle = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const currentUserId = await AsyncStorage.getItem('userId'); // AsyncStorage에서 현재 사용자의 userId 가져오기
 
-  // 팔로우 토글 처리
-  const handleFollowToggle = () => {
-    setIsFollowing(prev => !prev);
+      if (!token || !currentUserId) {
+        console.error('Token or userId not found');
+        Toast.show({
+          type: 'error',
+          text1: '오류',
+          text2: '로그인이 필요합니다.',
+        });
+        return;
+      }
+
+      const parsedUserId = parseInt(currentUserId, 10); // currentUserId를 숫자로 변환
+
+      if (isNaN(parsedUserId)) {
+        console.error('Invalid userId');
+        Toast.show({
+          type: 'error',
+          text1: '오류',
+          text2: '잘못된 사용자 ID입니다.',
+        });
+        return;
+      }
+
+      if (!isFollowing) {
+        console.log(
+          'profile.user.userId:',
+          profile.user.userId,
+          'Type:',
+          typeof profile.user.userId,
+        );
+        console.log(
+          'currentUserId:',
+          currentUserId,
+          'Type:',
+          typeof currentUserId,
+        );
+
+        // 팔로우 요청
+        const url = `${BASE_URL}/users/${profile.user.userId}/follow`;
+        await axios.post(
+          url,
+          {follower_id: currentUserId},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        Toast.show({
+          type: 'success',
+          text1: `${profile.user.name}님을 팔로우합니다.`,
+        });
+      } else {
+        Toast.show({
+          type: 'info',
+          text1: '알림',
+          text2: '언팔로우 기능은 아직 구현되지 않았습니다.',
+        });
+      }
+
+      // 상태 업데이트
+      setIsFollowing(prev => !prev);
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+      Toast.show({
+        type: 'error',
+        text1: '오류',
+        text2: '팔로우 요청 처리 중 문제가 발생했습니다.',
+      });
+    }
   };
 
   return (
