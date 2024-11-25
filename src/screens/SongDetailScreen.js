@@ -98,7 +98,7 @@ const SongDetailScreen = ({route}) => {
           text1: '노래가 공유되었습니다.',
         });
         setTimeout(() => {
-          navigation.navigate('Home');
+          navigation.navigate('Home', {reloadFeed: true});
         }, 2000);
       }
     } catch (error) {

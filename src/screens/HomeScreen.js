@@ -4,12 +4,13 @@ import {FlatList, TouchableOpacity, Linking, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {BASE_URL} from '../../env';
-import {useFocusEffect} from '@react-navigation/native'; // useFocusEffect 임포트
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 const SongCard = ({item, userId}) => {
   const [reactionCount, setReactionCount] = useState(
-    item.Song[0]?.reaction || 0, // 안전하게 접근
-  );
+    item.Song[0]?.reaction || 0,
+  ); // 안전하게 접근
 
   const handleReaction = () => {
     setReactionCount(reactionCount + 1);
@@ -27,6 +28,8 @@ const SongCard = ({item, userId}) => {
       .catch(err => console.error('Error checking URL support:', err));
   };
 
+  const song = item.Song.length > 0 ? item.Song[0] : null;
+
   return (
     <Card MyId={item.id === userId}>
       {item.id !== userId ? (
@@ -42,39 +45,41 @@ const SongCard = ({item, userId}) => {
       <ContentContainer>
         {item.id !== userId && <UserName>{item.name}</UserName>}
         <SongBox>
-          <AlbumCover
-            source={{
-              uri:
-                item.Song[0]?.album_cover_url &&
-                item.Song[0]?.album_cover_url !== ''
-                  ? item.Song[0]?.album_cover_url
-                  : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-            }}
-          />
-          <SongInfo>
-            <SongTitle>{item.Song[0]?.title || 'Unknown Title'}</SongTitle>
-            <SongArtist>{item.Song[0]?.artist || 'Unknown Artist'}</SongArtist>
-          </SongInfo>
-          <TouchableOpacity
-            onPress={() =>
-              handleSpotifyClick(
-                item.Song[0]?.spotify_url || '#',
-                item.Song[0]?.uri || '#',
-              )
-            }>
-            <PlayButtonContainer>
-              <MusicPlayButton
+          {song ? (
+            <>
+              <AlbumCover
                 source={{
-                  uri: 'https://cdn.pixabay.com/photo/2022/08/21/22/17/icon-7402243_1280.png',
+                  uri:
+                    song.album_cover_url && song.album_cover_url !== ''
+                      ? song.album_cover_url
+                      : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                 }}
               />
-            </PlayButtonContainer>
-          </TouchableOpacity>
+              <SongInfo>
+                <SongTitle>{song.title || 'Unknown Title'}</SongTitle>
+                <SongArtist>{song.artist || 'Unknown Artist'}</SongArtist>
+              </SongInfo>
+              <TouchableOpacity
+                onPress={() =>
+                  handleSpotifyClick(song.spotify_url || '#', song.uri || '#')
+                }>
+                <PlayButtonContainer>
+                  <MusicPlayButton
+                    source={{
+                      uri: 'https://cdn.pixabay.com/photo/2022/08/21/22/17/icon-7402243_1280.png',
+                    }}
+                  />
+                </PlayButtonContainer>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text>No song data available</Text> // Song 데이터가 없을 경우 표시할 텍스트
+          )}
         </SongBox>
         <RowContainer>
           <DateText>
-            {item.Song[0]?.shared_at
-              ? new Date(item.Song[0].shared_at).toLocaleDateString('ko-KR', {
+            {song
+              ? new Date(song.shared_at).toLocaleDateString('ko-KR', {
                   year: 'numeric',
                   month: '2-digit',
                   day: '2-digit',
@@ -93,53 +98,62 @@ const SongCard = ({item, userId}) => {
   );
 };
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = () => {
   const [userId, setUserId] = useState(null);
   const [feedData, setFeedData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(''); // errorMessage 상태 정의
+  const [errorMessage, setErrorMessage] = useState('');
+  const route = useRoute(); // 라우트 훅을 통해 파라미터 받기
+  const navigation = useNavigation();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // 페이지가 포커스를 받으면 데이터를 다시 가져오기
-      const fetchData = async () => {
-        try {
-          const storedUserId = await AsyncStorage.getItem('userId');
-          const token = await AsyncStorage.getItem('token');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        const token = await AsyncStorage.getItem('token');
 
-          if (!storedUserId || !token) {
-            setErrorMessage('User ID or Auth Token is missing.');
-            setLoading(false);
-            return;
-          }
-
-          setUserId(parseInt(storedUserId, 10));
-
-          const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          setFeedData(response.data);
-          if (response.data.length === 0) {
-            setErrorMessage('아직 공유된 노래가 없습니다'); // 데이터가 없으면 메시지 설정
-          }
-        } catch (error) {
-          setErrorMessage('공유된 노래가 없습니다'); // 에러 발생 시 메시지 설정
-        } finally {
+        if (!storedUserId || !token) {
+          setErrorMessage('User ID or Auth Token is missing.');
           setLoading(false);
+          return;
         }
-      };
 
-      fetchData();
-    }, []), // 빈 배열로 설정하여 한번만 실행되도록
-  );
+        setUserId(parseInt(storedUserId, 10));
 
+        const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setFeedData(response.data); // 데이터 업데이트
+        console.log('Fetched data:', JSON.stringify(response.data, null, 2));
+
+        if (response.data.length === 0) {
+          setErrorMessage('아직 공유된 노래가 없습니다');
+        } else {
+          setErrorMessage('');
+        }
+      } catch (error) {
+        setErrorMessage('공유된 노래가 없습니다');
+      } finally {
+        setLoading(false); // 데이터 가져오기 끝났으면 로딩 상태 false로 설정
+      }
+    };
+
+    // 메뉴 접근 시에도 데이터를 불러오고, reloadFeed가 true일 경우에는 데이터 새로 불러오기
+    if (route.params?.reloadFeed || feedData.length === 0) {
+      setLoading(true); // 데이터 로딩 시작
+      fetchData(); // 데이터 불러오기
+    }
+  }, [route.params?.reloadFeed, feedData.length]); // reloadFeed와 feedData.length가 변경될 때마다 호출
+
+  // 로딩 중일 때 로딩 텍스트 반환
   if (loading) {
-    return <Text>Loading...</Text>; // 로딩 중 메시지
+    return <Text>Loading...</Text>;
   }
 
+  // 데이터를 가져온 후 UI 렌더링
   return (
     <Container>
       <HeaderContainer>
@@ -147,13 +161,13 @@ const HomeScreen = ({navigation}) => {
       </HeaderContainer>
       <ListContainer>
         {errorMessage ? (
-          <ErrorText>{errorMessage}</ErrorText> // 에러 메시지 렌더링
+          <ErrorText>{errorMessage}</ErrorText>
         ) : (
           <FlatList
             data={feedData}
             renderItem={({item}) => <SongCard item={item} userId={userId} />}
             keyExtractor={item => `${item.id}`}
-            extraData={feedData}
+            extraData={feedData} // feedData가 변경될 때마다 렌더링이 일어나도록 설정
           />
         )}
       </ListContainer>
@@ -300,4 +314,10 @@ const ErrorText = styled.Text`
   color: #222;
   text-align: center;
   margin-top: 80px;
+`;
+const LoadingText = styled.Text`
+  font-size: 18px;
+  color: gray;
+  text-align: center;
+  margin-top: 20px;
 `;

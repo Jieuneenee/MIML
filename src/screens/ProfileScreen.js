@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ScrollView, Text, TouchableOpacity, Image} from 'react-native';
 import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import {useFocusEffect} from '@react-navigation/native';
 import {BASE_URL} from '../../env';
 
 const ProfileScreen = ({navigation}) => {
@@ -11,59 +12,59 @@ const ProfileScreen = ({navigation}) => {
   const [profile, setProfile] = useState(null); // 프로필 데이터
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const UserId = await AsyncStorage.getItem('userId');
-      const token = await AsyncStorage.getItem('token');
-      setUserId(UserId);
-      setToken(token);
+  const fetchProfileData = async () => {
+    const UserId = await AsyncStorage.getItem('userId');
+    const token = await AsyncStorage.getItem('token');
+    setUserId(UserId);
+    setToken(token);
 
-      if (UserId && token) {
-        try {
-          const response = await fetch(`${BASE_URL}/users/profile/${UserId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    if (UserId && token) {
+      try {
+        const response = await fetch(`${BASE_URL}/users/profile/${UserId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Profile data:', data); // 데이터 확인
-            setProfile(data); // 전체 데이터를 profile로 설정
-            setLoading(false); // 데이터 로딩 완료 후 로딩 상태 업데이트
-          } else {
-            const data = await response.json();
-            Toast.show({
-              type: 'error',
-              text1: '프로필 정보를 가져오는 데 실패했습니다.',
-              text2: data.msg || 'Failed to fetch profile.',
-            });
-            setLoading(false);
-          }
-        } catch (error) {
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Profile data:', data); // 데이터 확인
+          setProfile(data); // 전체 데이터를 profile로 설정
+        } else {
+          const data = await response.json();
           Toast.show({
             type: 'error',
-            text1: '프로필 정보를 가져오는 데 오류가 발생했습니다.',
+            text1: '프로필 정보를 가져오는 데 실패했습니다.',
+            text2: data.msg || 'Failed to fetch profile.',
           });
-          setLoading(false);
         }
-      } else {
-        setLoading(false); // 유효한 userId나 token이 없으면 로딩 종료
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: '프로필 정보를 가져오는 데 오류가 발생했습니다.',
+        });
+      } finally {
+        setLoading(false);
       }
-    };
+    } else {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true); // 포커스 받을 때마다 로딩 상태 초기화
+      fetchProfileData();
+    }, []),
+  );
 
-  // 로딩중일때
-  if (!profile) {
+  if (loading) {
     return <LoadingText>Loading...</LoadingText>;
   }
 
   const handleLogout = async () => {
-    // 로그아웃 처리
     try {
       const token = await AsyncStorage.getItem('token');
 
@@ -85,9 +86,7 @@ const ProfileScreen = ({navigation}) => {
       });
 
       if (response.ok) {
-        await AsyncStorage.removeItem('token'); // 토큰 삭제
-        const token = await AsyncStorage.getItem('token'); // 삭제 후 다시 가져와서 확인
-        console.log('Token after removal:', token); // null이어야 함
+        await AsyncStorage.removeItem('token');
         Toast.show({
           type: 'success',
           text1: '로그아웃 되었습니다.',
@@ -155,6 +154,8 @@ const ProfileScreen = ({navigation}) => {
 };
 
 export default ProfileScreen;
+
+// 이하 스타일 컴포넌트는 동일
 
 const Container = styled.View`
   flex: 1;
