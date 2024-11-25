@@ -199,6 +199,7 @@ const ListContainer = styled.View`
   padding: 8px;
   border-radius: 15px;
   margin-top: -15px;
+  margin-bottom: -10px;
 `;
 
 const Card = styled.View`
