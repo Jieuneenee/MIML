@@ -1,20 +1,39 @@
-import dailyData from '../constants/json/dailyChartData.json';
-import weeklyData from '../constants/json/weeklyChartData.json';
-import monthlyData from '../constants/json/monthlyChartData.json';
-import yearlyData from '../constants/json/yearlyChartData.json';
+import {BASE_URL} from '../../env';
+import Toast from 'react-native-toast-message'; // 토스트 메시지 라이브러리
 
-export const fetchChartData = async () => {
-  /*
-  const dailyUrl = 'http://127.0.0.1:8000/charts/daily';
-  const weeklyUrl = 'http://127.0.0.1:8000/charts/weekly';
-  const monthlyUrl = 'http://127.0.0.1:8000/charts/monthly';
-  const yearlyUrl = 'http://127.0.0.1:8000/charts/yearly';
+export async function fetchChartData(endpoint, onError) {
+  try {
+    const response = await fetch(`${BASE_URL}/charts/${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  return Promise.all([
-    fetch(dailyUrl).then(res => res.json()),
-    fetch(weeklyUrl).then(res => res.json()),
-    fetch(monthlyUrl).then(res => res.json()),
-    fetch(yearlyUrl).then(res => res.json()),
-  ]);*/
-  return Promise.resolve([dailyData, weeklyData, monthlyData, yearlyData]);
-};
+    console.log(`Response Status for ${endpoint}:`, response.status);
+
+    const responseBody = await response.text(); // 응답 본문 가져오기
+
+    if (response.ok) {
+      const data = JSON.parse(responseBody); // 성공 시 JSON 데이터 리턴
+      return data;
+    } else {
+      const errorData = JSON.parse(responseBody); // 실패 응답 처리
+      //onError(`Error from server: ${errorData.message || 'Unknown error'}`);
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: `${errorData.message || '아직 불러올 데이터가 없습니다...'}`,
+        visibilityTime: 3000,
+        autoHide: true,
+      });
+
+      return {};
+    }
+  } catch (error) {
+    // 네트워크 또는 기타 오류 처리
+    onError(`Network Error: ${error.message}`);
+  }
+}
+
+export async function createMyplaylist(userId, onError) {}

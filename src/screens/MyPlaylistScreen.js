@@ -1,13 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 
 import {fetchTodayPlaylistData} from '../utils/fetchTodayPlaylistData.js';
 import RenderPlaylist from '../components/renderPlaylist.js';

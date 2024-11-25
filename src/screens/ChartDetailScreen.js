@@ -1,17 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import RenderSongs from '../components/renderSongs.js';
-
 import {fetchChartData} from '../utils/fetchChartData.js';
 
 const ChartDetailScreen = ({navigation}) => {
@@ -26,21 +15,26 @@ const ChartDetailScreen = ({navigation}) => {
 
   // 컴포넌트가 처음 렌더링될 때 'daily' 차트 데이터를 불러옵니다.
   useEffect(() => {
-    fetchData('daily');
+    fetchData(chartType, error =>
+      console.error(`${chartType} Chart Error:`, error),
+    );
   }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
 
   const fetchData = async chartType => {
     try {
-      // chartType에 따라 적절한 데이터를 가져오도록 수정
-      const [daily, weekly, monthly, yearly] = await fetchChartData(); // API 함수 호출
+      // chartType에 따라 데이터 가져옴
+      const data = await fetchChartData(chartType, error =>
+        console.error(`${chartType} Chart Error:`, error),
+      );
+
       if (chartType === 'daily') {
-        setDailyChartData(daily);
+        setDailyChartData(data);
       } else if (chartType === 'weekly') {
-        setWeeklyChartData(weekly);
+        setWeeklyChartData(data);
       } else if (chartType === 'monthly') {
-        setMonthlyChartData(monthly);
+        setMonthlyChartData(data);
       } else if (chartType === 'yearly') {
-        setYearlyChartData(yearly);
+        setYearlyChartData(data);
       }
       console.log(`fetchData() 호출됨... 차트 타입: ${chartType}`);
     } catch (error) {
@@ -53,11 +47,20 @@ const ChartDetailScreen = ({navigation}) => {
   };
 
   const handleChartSelect = chartType => {
-    console.log('버튼을 눌렀습니다...');
-    setChartType(chartType); // 차트 타입 설정
+    console.log('차트타입을 변경했습니다...');
+    setChartType(chartType); // 차트타입 변경
     setSelectedSong([]); // 선택된 노래 초기화
     setAllButton(false); // 전체 선택 버튼 초기화
     fetchData(chartType); // 차트 데이터를 새로 불러오는 함수 호출
+  };
+
+  // 차트 데이터가 비었는지 확인하는 함수
+  const checkData = data => {
+    // 데이터가 배열인지 확인하고, 배열이 아니면 빈 배열 반환
+    if (!Array.isArray(data)) {
+      return [];
+    }
+    return data;
   };
 
   // 전체선택 버튼 함수
@@ -173,10 +176,10 @@ const ChartDetailScreen = ({navigation}) => {
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
       <RenderSongs
         chartType={chartType}
-        dailyChartData={dailyChartData}
-        weeklyChartData={weeklyChartData}
-        monthlyChartData={monthlyChartData}
-        yearlyChartData={yearlyChartData}
+        dailyChartData={checkData(dailyChartData)}
+        weeklyChartData={checkData(weeklyChartData)}
+        monthlyChartData={checkData(monthlyChartData)}
+        yearlyChartData={checkData(yearlyChartData)}
         playlistData={[]}
       />
     </View>
