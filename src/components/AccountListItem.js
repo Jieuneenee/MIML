@@ -6,9 +6,13 @@ const AccountListItem = ({name, profileImageUrl, userId}) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate('OtherProfile', {userId});
+    console.log('Navigating with userId:', userId); // 여기에서 userId 확인
+    if (userId) {
+      navigation.navigate('OtherProfile', {userId});
+    } else {
+      console.error('No userId provided');
+    }
   };
-
   return (
     <Container>
       <ProfileImage source={{uri: profileImageUrl}} />

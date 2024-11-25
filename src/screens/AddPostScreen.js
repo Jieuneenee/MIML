@@ -9,15 +9,30 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BASE_URL} from '../../env';
 
-const AddPostScreen = ({navigation, userId}) => {
+const AddPostScreen = ({navigation}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    loadRecentSearches();
-  }, []);
+    const getUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem('userId');
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    };
+    getUserId();
+  }, []); // userId를 로드
+
+  useEffect(() => {
+    if (userId) {
+      loadRecentSearches();
+    }
+  }, [userId]); // userId가 변경될 때마다 최근 검색어 불러오기
 
   // 사용자별 최근 검색어 불러오기
   const loadRecentSearches = async () => {
@@ -49,7 +64,43 @@ const AddPostScreen = ({navigation, userId}) => {
     }
   };
 
-  // 사용자별 최근 검색어 삭제
+  // 검색 처리 함수
+  const handleSearch = async () => {
+    if (!searchTerm) return;
+
+    setLoading(true); // 검색 시작 시 로딩 상태로 변경
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/spotify/search?song_name=${searchTerm}`,
+      );
+      const data = await response.json();
+      setSearchResults(data.songs);
+    } catch (error) {
+      console.error('Error fetching songs:', error);
+    } finally {
+      setLoading(false); // 검색이 완료되면 로딩 상태 종료
+    }
+  };
+
+  // 검색어 입력 필드 클리어
+  const clearSearchField = () => {
+    setSearchTerm('');
+  };
+
+  // 상세 페이지로 이동
+  const navigateToDetail = uri => {
+    navigation.navigate('Detail', {song_uri: uri});
+  };
+
+  // 검색어 입력 후 엔터치면 검색어 저장
+  const handleSubmitEditing = () => {
+    if (searchTerm) {
+      saveRecentSearch(searchTerm); // 엔터를 칠 때만 저장
+      handleSearch(); // 검색 처리
+    }
+  };
+
   const clearRecentSearch = async term => {
     const updatedSearches = recentSearches.filter(item => item !== term);
     setRecentSearches(updatedSearches);
@@ -60,49 +111,20 @@ const AddPostScreen = ({navigation, userId}) => {
         JSON.stringify(updatedSearches),
       );
     } catch (error) {
-      console.error('Failed to clear recent search:', error);
+      console.error('Failed to delete recent search:', error);
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchTerm) return;
-    saveRecentSearch(searchTerm);
-
-    // 더미 데이터 설정
-    const dummyData = [
-      {
-        title: 'Song 1',
-        artist: 'Artist 1',
-        album_cover_url:
-          'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
-        uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF"
-      },
-      {
-        title: 'Song 2',
-        artist: 'Artist 2',
-        album_cover_url:
-          'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
-          uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF",
-      },
-      {
-        title: 'Song 3',
-        artist: 'Artist 3',
-        album_cover_url:
-          'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
-        uri: "spotify:track:5VBjyOQzqlPNgdRPMM6prF",
-      },
-    ];
-
-    setSearchResults(dummyData);
+  // 검색어 클릭 시 바로 검색 처리
+  const handleQueryClick = async item => {
+    setSearchTerm(item); // 검색어 입력
   };
 
-  const clearSearchField = () => {
-    setSearchTerm('');
-  };
-
-  const navigateToDetail = title => {
-    navigation.navigate('Detail', {title});
-  };
+  useEffect(() => {
+    if (searchTerm) {
+      handleSearch(); // 검색어가 변경되면 자동으로 검색 처리
+    }
+  }, [searchTerm]);
 
   return (
     <Container>
@@ -111,7 +133,7 @@ const AddPostScreen = ({navigation, userId}) => {
           placeholder="어떤 것을 듣고 싶으세요?"
           value={searchTerm}
           onChangeText={setSearchTerm}
-          onSubmitEditing={handleSearch}
+          onSubmitEditing={handleSubmitEditing}
           placeholderTextColor="#888"
         />
         {searchTerm ? (
@@ -127,12 +149,14 @@ const AddPostScreen = ({navigation, userId}) => {
         </ListHeaderText>
       </ListHeader>
 
-      {searchTerm ? (
-        <ResultsList // 검색 결과 목록
+      {loading ? (
+        <Text>검색 중...</Text>
+      ) : searchTerm ? (
+        <ResultsList
           data={searchResults}
           keyExtractor={item => item.id?.toString() || Math.random().toString()}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => navigateToDetail(item.title)}>
+            <TouchableOpacity onPress={() => navigateToDetail(item.uri)}>
               <SearchResultItem>
                 <AlbumCover source={{uri: item.album_cover_url}} />
                 <ResultTextContainer>
@@ -147,16 +171,12 @@ const AddPostScreen = ({navigation, userId}) => {
           }
         />
       ) : (
-        <RecentSearchesList // 최근 검색 목록
+        <RecentSearchesList
           data={recentSearches}
           keyExtractor={item => item}
           renderItem={({item}) => (
             <RecentSearchItem>
-              <TouchableOpacity
-                onPress={() => {
-                  setSearchTerm(item);
-                  handleSearch();
-                }}>
+              <TouchableOpacity onPress={() => handleQueryClick(item)}>
                 <Text style={{color: '#fff'}}>{item}</Text>
               </TouchableOpacity>
               <ClearButton2 onPress={() => clearRecentSearch(item)}>

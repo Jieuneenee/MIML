@@ -7,8 +7,7 @@ const data = [
   {
     id: '1',
     name: 'Alice',
-    profileImage:
-      'https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg',
+    profileImage: null,
     Song: [
       {
         title: 'meow',
@@ -242,13 +241,17 @@ const SongCard = ({item}) => {
 
   return (
     <Card MyId={item.id === '2'}>
-      {/* 특정 id에서 조건부 렌더링 - 일단은 2로 테스트함 */}
       {/* 특정 id에서 프로필 사진 렌더링X */}
-      {item.id !== '2' && item.profileImage ? (
-        <ProfileImage source={{uri: item.profileImage}} />
+      {item.id !== '2' ? (
+        <ProfileImage
+          source={{
+            uri:
+              item.profileImage ||
+              'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+          }}
+        />
       ) : null}
       <ContentContainer>
-        {/* 특정 id에서 name 렌더링 하지 않음 */}
         {item.id !== '2' && <UserName>{item.name}</UserName>}
         <SongBox>
           <AlbumCover source={{uri: item.Song[0].album_cover_url}} />

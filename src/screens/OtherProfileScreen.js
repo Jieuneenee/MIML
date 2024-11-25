@@ -1,10 +1,51 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import styled from 'styled-components/native';
-import profile from '../constants/json/otherProfile.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BASE_URL} from '../../env';
 
-const OtherProfileScreen = () => {
-  const [isFollowing, setIsFollowing] = useState(profile.is_following); // 더미데이터에서 팔로우 여부 가져오기
+const OtherProfileScreen = ({route}) => {
+  const {userId} = route.params; // userId 받아오기
+  const [profile, setProfile] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false); // 팔로우 여부
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token'); // 토큰
+        console.log('Token:', token);
+        console.log('User ID:', userId);
+        if (token && userId) {
+          const url = `${BASE_URL}/users/profile/${userId}`;
+          const response = await axios.get(url, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          // 받은 프로필 데이터를 상태에 저장
+          setProfile(response.data);
+          setIsFollowing(response.data.is_following); // 팔로우 상태 따로 가져오기
+          console.log('Profile:', response.data);
+          console.log('Is following:', response.data.is_following);
+          console;
+        } else {
+          console.error('Token or User ID not found');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, [userId]);
+
+  // 로딩 중일 때
+  if (!profile) {
+    return <LoadingText>Loading...</LoadingText>;
+  }
+
+  // 팔로우 토글 처리
   const handleFollowToggle = () => {
     setIsFollowing(prev => !prev);
   };
@@ -13,9 +54,10 @@ const OtherProfileScreen = () => {
     <Container>
       <ProfileImage
         source={{
-          uri: profile.user.profile_image_url
-            ? profile.user.profile_image_url
-            : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
+          uri:
+            profile.user.profile_image_url !== 'default_image_url'
+              ? profile.user.profile_image_url
+              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
         }}
       />
       <UserName>{profile.user.name}</UserName>
@@ -24,13 +66,19 @@ const OtherProfileScreen = () => {
       </FollowButton>
       <PlaylistTitle>Today's Shared Song</PlaylistTitle>
       <PlaylistContainer>
-        <AlbumCover
-          source={{uri: profile.shared_songs[0]?.spotify_url || ''}}
-        />
-        <SongDetails>
-          <SongTitle>{profile.shared_songs[0]?.title}</SongTitle>
-          <SongArtist>{profile.shared_songs[0]?.artist}</SongArtist>
-        </SongDetails>
+        {profile.recent_shared_song ? (
+          <>
+            <AlbumCover
+              source={{uri: profile.recent_shared_song.album_cover_url || ''}}
+            />
+            <SongDetails>
+              <SongTitle>{profile.recent_shared_song.title}</SongTitle>
+              <SongArtist>{profile.recent_shared_song.artist}</SongArtist>
+            </SongDetails>
+          </>
+        ) : (
+          <NoSongText>공유된 노래가 없습니다.</NoSongText>
+        )}
       </PlaylistContainer>
     </Container>
   );
@@ -112,4 +160,17 @@ const SongTitle = styled.Text`
 const SongArtist = styled.Text`
   font-size: 14px;
   color: #aaa;
+`;
+
+const LoadingText = styled.Text`
+  font-size: 18px;
+  text-align: center;
+  margin-top: 50px;
+`;
+
+const NoSongText = styled.Text`
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin-top: 0px;
 `;

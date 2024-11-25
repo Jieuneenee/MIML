@@ -1,39 +1,76 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-
-const dummyData = [
-  {
-    id: '1',
-    name: 'Alice',
-    profileImage:
-      'https://cdn.pixabay.com/photo/2023/01/04/13/21/animals-7696695_1280.jpg',
-  },
-  {
-    id: '2',
-    name: 'Bob',
-    profileImage: null,
-  },
-];
+import {BASE_URL} from '../../env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSearch = query => {
-    setSearchQuery(query);
-    if (query) {
-      const results = dummyData.filter(user =>
-        user.name.toLowerCase().includes(query.toLowerCase()),
-      );
-      setFilteredData(results);
-    } else {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    // 검색어가 변경되면 다시 필터링된 데이터를 초기화
+    if (!searchQuery) {
       setFilteredData([]);
+      setErrorMessage('');
+    }
+  }, [searchQuery]);
+
+  const handleSearch = async name => {
+    setSearchQuery(name);
+    if (!name) {
+      setFilteredData([]);
+      setErrorMessage('');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        throw new Error('로그인이 필요합니다.');
+      }
+
+      const response = await fetch(`${BASE_URL}/users/search?name=${name}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFilteredData(data);
+      } else if (response.status === 404) {
+        setFilteredData([]);
+        setErrorMessage('사용자를 찾을 수 없습니다.');
+      } else {
+        throw new Error('검색 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('Search Error:', error);
+      setErrorMessage('검색 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const clearSearch = () => {
     setSearchQuery('');
     setFilteredData([]);
+    setErrorMessage('');
+  };
+
+  const handleProfileView = userId => {
+    // 'OtherProfile' 페이지로 userId를 넘기면서 이동
+    navigation.navigate('OtherProfile', {userId});
   };
 
   return (
@@ -55,31 +92,33 @@ const SearchScreen = () => {
         <ListHeaderText>{searchQuery ? '검색 결과' : null}</ListHeaderText>
       </ListHeader>
 
-      {searchQuery && filteredData.length === 0 && (
-        <MessageText>사용자를 찾을 수 없습니다.</MessageText>
-      )}
+      {loading && <MessageText>검색 중...</MessageText>}
 
-      <UserList
-        data={filteredData}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <UserContainer>
-            <ProfileImage
-              source={{
-                uri: item.profileImage
-                  ? item.profileImage // 유효한 URL
-                  : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // 기본 이미지 URL
-              }}
-            />
-            <UserInfo>
-              <UserName>{item.name}</UserName>
-              <ProfileButton>
-                <ButtonText>View Profile</ButtonText>
-              </ProfileButton>
-            </UserInfo>
-          </UserContainer>
-        )}
-      />
+      {errorMessage ? (
+        <MessageText>{errorMessage}</MessageText>
+      ) : (
+        <UserList
+          data={filteredData}
+          keyExtractor={item => item.userId.toString()}
+          renderItem={({item}) => (
+            <UserContainer>
+              <ProfileImage
+                source={{
+                  uri: item.profileImage
+                    ? item.profileImage
+                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                }}
+              />
+              <UserInfo>
+                <UserName>{item.name}</UserName>
+                <ProfileButton onPress={() => handleProfileView(item.userId)}>
+                  <ButtonText>View Profile</ButtonText>
+                </ProfileButton>
+              </UserInfo>
+            </UserContainer>
+          )}
+        />
+      )}
     </Container>
   );
 };
