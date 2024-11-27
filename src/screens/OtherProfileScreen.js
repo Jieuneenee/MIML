@@ -4,11 +4,13 @@ import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../../env';
 import Toast from 'react-native-toast-message';
+import {useNavigation} from '@react-navigation/native';
 
 const OtherProfileScreen = ({route}) => {
   const {userId} = route.params; // userId 받아오기
   const [profile, setProfile] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false); // 팔로우 여부
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -100,7 +102,11 @@ const OtherProfileScreen = ({route}) => {
         Toast.show({
           type: 'success',
           text1: `${profile.user.name}님을 팔로우합니다.`,
+          text2: `${profile.user.name}님의 공유 노래를 들어보세요!!`,
         });
+        setTimeout(() => {
+          navigation.navigate('Home', {reloadFeed: true});
+        }, 3000);
       } else {
         Toast.show({
           type: 'info',

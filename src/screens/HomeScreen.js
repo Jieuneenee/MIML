@@ -144,7 +144,13 @@ const HomeScreen = () => {
     // 메뉴 접근 시에도 데이터를 불러오고, reloadFeed가 true일 경우에는 데이터 새로 불러오기
     if (route.params?.reloadFeed || feedData.length === 0) {
       setLoading(true); // 데이터 로딩 시작
-      fetchData(); // 데이터 불러오기
+      fetchData().finally(() => {
+        setLoading(false); // 데이터 로딩 끝
+        if (route.params?.reloadFeed) {
+          // reloadFeed를 false로 초기화
+          navigation.setParams({reloadFeed: false});
+        }
+      });
     }
   }, [route.params?.reloadFeed, feedData.length]); // reloadFeed와 feedData.length가 변경될 때마다 호출
 
