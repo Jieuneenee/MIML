@@ -156,7 +156,7 @@ const HomeScreen = () => {
 
   // 로딩 중일 때 로딩 텍스트 반환
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Container></Container>;
   }
 
   // 데이터를 가져온 후 UI 렌더링

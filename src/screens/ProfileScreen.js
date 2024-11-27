@@ -61,7 +61,7 @@ const ProfileScreen = ({navigation}) => {
   );
 
   if (loading) {
-    return <LoadingText>Loading...</LoadingText>;
+    return <Container></Container>;
   }
 
   const handleLogout = async () => {
