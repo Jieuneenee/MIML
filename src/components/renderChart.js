@@ -71,7 +71,7 @@ const RenderChart = ({
     }
   };
 
-  console.log(dataWithIds);
+  console.log(data);
 
   return (
     <View style={styles.container}>
@@ -80,7 +80,7 @@ const RenderChart = ({
         keyExtractor={item => item.rank}
         renderItem={({item}) => (
           <View style={styles.songContainer}>
-            {/* 앨범 사진 */ console.log(item.albumImageUrl)}
+            {/* 앨범 사진 */}
             <Image style={styles.image} source={{uri: item.album_cover_url}} />
 
             {/* 노래 순위 */}

@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 
-import {fetchTodayPlaylistData} from '../utils/fetchTodayPlaylistData.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {fetchMyPlaylist} from '../utils/fetchMyPlaylist.js';
 import RenderPlaylist from '../components/renderPlaylist.js';
 
-const TodayPlaylistScreen = ({navigation}) => {
+const MyPlaylistScreen = ({navigation}) => {
   // 각 차트 데이터를 별도로 관리할 상태
   const [playlistData, setPlaylistData] = useState([]);
   const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
@@ -16,15 +18,24 @@ const TodayPlaylistScreen = ({navigation}) => {
   }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
 
   const fetchData = async () => {
+    const UserId = await AsyncStorage.getItem('userId');
+    const token = await AsyncStorage.getItem('token');
+    console.log(`userId: ${UserId}, token: ${token}`);
+
     try {
-      const dailyData = await fetchTodayPlaylistData(); // API 함수 호출
-      setPlaylistData(dailyData);
-      console.log(`fetchData() 호출됨... 오늘의 플레이리스트`);
+      // API 함수 호출
+      const playlistType = 'my'; // chartType 변수 선언
+      const data = await fetchMyPlaylist(token, playlistType, UserId, error =>
+        console.error(`My Playlist Error:`, error),
+      );
+      console.log(data);
+      setPlaylistData(data);
+
+      console.log(`나만의 플레이리스트 호출...`);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error('Failed to fetch playlist:', error);
     }
   };
-
   const handleBackPress = () => {
     navigation.navigate('Chart');
   };
@@ -71,14 +82,7 @@ const TodayPlaylistScreen = ({navigation}) => {
 
       {/* 선택된 차트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
-      <RenderPlaylist
-        chartType={'myPlaylist'}
-        dailyChartData={[]}
-        weeklyChartData={[]}
-        monthlyChartData={[]}
-        yearlyChartData={[]}
-        playlistData={playlistData}
-      />
+      <RenderPlaylist chartType={'myPlaylist'} playlistData={playlistData} />
     </View>
   );
 };
@@ -140,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodayPlaylistScreen;
+export default MyPlaylistScreen;

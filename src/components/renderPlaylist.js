@@ -9,33 +9,30 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
-  Button,
   FlatList,
   Image,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
-import uuid from 'react-native-uuid';
+import {
+  addToMyPlaylist,
+  deletefromMyPlaylist,
+} from '../utils/fetchMyPlaylist.js';
+import Toast from 'react-native-toast-message'; // 토스트 메시지 라이브러리
 
 // 노래를 렌더링하는 함수
-const RenderPlaylist = ({
-  chartType,
-  dailyChartData,
-  weeklyChartData,
-  monthlyChartData,
-  yearlyChartData,
-  playlistData,
-}) => {
-  console.log('노래렌더링 함수입니다...');
-  //const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
+const RenderPlaylist = ({chartType, playlistData}) => {
+  console.log('플레이리스트 렌더링 함수입니다...');
   const [selectedSong, setSelectedSong] = useState(null); // selectedSong 상태 관리
-  const [showAddButton, setShowAddButton] = useState(false); // Add to Playlist 버튼 표시 여부
+  const [showAddButton, setShowAddButton] = useState(false); // Add / Delete 버튼 표시 여부
+  const [playlist, setPlaylist] = useState(playlistData || []); // 초기 플레이리스트 데이터 설정
 
   useEffect(() => {
     // 차트 타입이 변경될 때 전체선택 버튼 해제
     setSelectedSong(null); // 선택된 노래 초기화
     setShowAddButton(false); // 버튼 초기화
-  }, []); // chartType이 변경될 때마다 실행
+    setPlaylist(playlistData);
+  }, [playlistData]);
 
   let data =
     chartType === 'daily'
@@ -48,83 +45,17 @@ const RenderPlaylist = ({
       ? yearlyChartData
       : playlistData;
 
-  if (!data || data.length === 0) {
+  if (!playlistData || playlistData.length === 0) {
     console.log('렌더링 할 데이터가 없습니다...');
     return null;
   }
+
   // 데이터를 고유 ID가 포함된 데이터로 변환
   let dataWithIds = data.map((item, index) => ({
     ...item,
     //id: uuid.v4(), // 고유 ID를 각 항목에 추가 -> 이거 쓰면... id가 랜덤이라 리렌더링 문제 발생! id 넘겨달라고 해야함!!
     //rank: index + 1, // 1부터 시작하는 순위 추가
   }));
-
-  /*
-  // 전체선택 버튼 스타일
-  const allButtonStyle = {
-    width: 20,
-    height: 20,
-    marginRight: 1, // 버튼과 텍스트 사이 간격 설정
-    borderRadius: 15,
-    borderWidth: 1,
-    borderWidth: allButton ? 0 : 1, // allButton이 true일 때 테두리 없애기
-    borderColor: allButton ? 'transparent' : 'white', // allButton이 true일 때 테두리 색상 없애기
-    backgroundColor: allButton ? '#1ED760' : 'transparent', // 상태에 따라 배경색 변경
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  // 전체선택 버튼 함수
-  const toggleAllSelectButton = () => {
-    const newAllButtonState = !allButton;
-    setAllButton(newAllButtonState);
-
-    if (newAllButtonState) {
-      // 선택된 차트 타입에 따라 각 차트 데이터 배열을 참조
-      let chartData;
-      if (chartType === 'daily') {
-        chartData = dailyChartData;
-      } else if (chartType === 'weekly') {
-        chartData = weeklyChartData;
-      } else if (chartType === 'monthly') {
-        chartData = monthlyChartData;
-      } else if (chartType === 'yearly') {
-        chartData = yearlyChartData;
-      } else {
-        chartData = playlistData;
-      }
-
-      // 전체 선택 상태로 변경 시 해당 차트 데이터의 모든 곡 ID를 선택
-      const newSelectedSongs = {};
-
-      chartData.forEach(song => {
-        newSelectedSongs[song.songId] = true; // 모든 곡을 선택 상태로 설정
-      });
-      setSelectedSong(newSelectedSongs);
-    } else {
-      // 전체 선택 해제 시 모든 곡 선택 해제
-      setSelectedSong({});
-    }
-  };
-
-  // 선택 상태가 변경될 때 전체 선택 버튼 상태 업데이트 -> react hook 렌더링 오류...
-  useEffect(() => {
-    // 모든 곡이 선택되었으면 -> allButton 상태 true
-    if (Object.keys(selectedSong).length === dataWithIds.length) {
-      setAllButton(true);
-      console.log(
-        `모든 곡이 선택되었습니다... ${Object.keys(selectedSong).length}곡`,
-      );
-    } else if (
-      allButton &&
-      Object.keys(selectedSong).length !== dataWithIds.length
-    ) {
-      setAllButton(false);
-      console.log(
-        `전체 선택이 해지되었습니다...${Object.keys(selectedSong).length}곡`,
-      );
-    }
-  }, [selectedSong, dataWithIds.length]);*/
 
   // 노래 선택 함수
   const handleSongSelect = songId => {
@@ -159,21 +90,66 @@ const RenderPlaylist = ({
     };
   };
 
+  // 스포티파이 버튼 클릭 함수
+  const handleSpotify = async item => {
+    // item.uri가 있을 경우 해당 URI로 이동
+    console.log('Spotify 버튼 실행됨');
+    if (item && item.uri) {
+      try {
+        // item.uri로 URL을 엽니다.
+        await Linking.openURL(item.uri);
+      } catch (error) {
+        console.error('Failed to open URL:', error);
+      }
+    } else {
+      console.log('item.uri가 없습니다.');
+    }
+  };
+
   // Add to Playlist 버튼 클릭 시
-  const handleAddToPlaylist = () => {
-    // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
+  const handleAddToPlaylist = async () => {
+    console.log(selectedSong);
     console.log('Add to Playlist 클릭됨');
+
+    // 선택된 곡이 있을 때만 처리
+    if (selectedSong) {
+      await addToMyPlaylist(selectedSong, error =>
+        console.error(`add to My Playlist Error:`, error),
+      );
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: '곡을 선택해주세요.',
+      });
+    }
+
     setSelectedSong({});
-    setShowAddButton(false); // 버튼 숨기기
-    //setAllButton(false);
+    setShowAddButton(false); // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
   };
 
   // Delete Songs 버튼 클릭 시
-  const handleDeleteSongs = () => {
+  const handleDeleteSongs = async () => {
+    console.log(selectedSong);
     console.log('Delete Songs 클릭됨');
+
+    // 선택된 곡이 있을 때만 처리
+    if (selectedSong) {
+      await deletefromMyPlaylist(selectedSong, error =>
+        console.error(`delete from My Playlist Error:`, error),
+      );
+      // 삭제된 곡을 제외한 새로운 배열 생성
+      setPlaylist(prevPlaylist =>
+        prevPlaylist.filter(song => song.songId !== selectedSong),
+      );
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: '곡을 선택해주세요.',
+      });
+    }
+
     setSelectedSong({});
-    setShowAddButton(false); // 버튼 숨기기
-    //setAllButton(false);
+    setShowAddButton(false);
   };
 
   return (
@@ -193,7 +169,7 @@ const RenderPlaylist = ({
         </TouchableOpacity>
       )}
       <FlatList
-        data={dataWithIds}
+        data={playlist}
         keyExtractor={item => item.songId}
         contentContainerStyle={{paddingBottom: 100}} // 마지막 항목 아래 여백 추가
         renderItem={({item}) => (
@@ -229,7 +205,7 @@ const RenderPlaylist = ({
               </Text>
             </View>
             {/* 스포티파이 버튼 */}
-            <TouchableOpacity onPress={() => console.log('스포티파이재생버튼')}>
+            <TouchableOpacity onPress={() => handleSpotify(item)}>
               <Image
                 source={{
                   uri: 'https://cdn.pixabay.com/photo/2022/08/21/22/17/icon-7402243_1280.png',

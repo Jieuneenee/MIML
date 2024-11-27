@@ -1,15 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {fetchTodayPlaylistData} from '../utils/fetchTodayPlaylistData.js';
+import {fetchTodayPlaylist} from '../utils/fetchTodayPlaylist.js';
 import RenderPlaylist from '../components/renderPlaylist.js';
 
 const TodayPlaylistScreen = ({navigation}) => {
@@ -17,19 +10,34 @@ const TodayPlaylistScreen = ({navigation}) => {
   const [playlistData, setPlaylistData] = useState([]);
   const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
   const [selectedSong, setSelectedSong] = useState([]); // selectedSong 상태 관리
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null); // 토큰, 유저아이디 상태
 
-  // 컴포넌트가 처음 렌더링될 때 'daily' 차트 데이터를 불러옵니다.
+  // 처음 렌더링될 때 오늘의 플레이리스트를 불러옵니다.
   useEffect(() => {
     fetchData();
   }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
 
   const fetchData = async () => {
+    const UserId = await AsyncStorage.getItem('userId');
+    const token = await AsyncStorage.getItem('token');
+    console.log(`userId: ${UserId}, token: ${token}`);
+
     try {
-      const dailyData = await fetchTodayPlaylistData(); // API 함수 호출
-      setPlaylistData(dailyData);
-      console.log(`fetchData() 호출됨... 오늘의 플레이리스트`);
+      // API 함수 호출
+      const playlistType = 'today'; // chartType 변수 선언
+      const data = await fetchTodayPlaylist(
+        token,
+        playlistType,
+        UserId,
+        error => console.error(`${chartType} Playlist Error:`, error),
+      );
+      console.log(data);
+      setPlaylistData(data);
+
+      console.log(`오늘의 플레이리스트 호출...`);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error('Failed to fetch playlist:', error);
     }
   };
 
@@ -79,14 +87,7 @@ const TodayPlaylistScreen = ({navigation}) => {
 
       {/* 선택된 차트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
-      <RenderPlaylist
-        chartType={'todayPlaylist'}
-        dailyChartData={[]}
-        weeklyChartData={[]}
-        monthlyChartData={[]}
-        yearlyChartData={[]}
-        playlistData={playlistData}
-      />
+      <RenderPlaylist chartType={'todayPlaylist'} playlistData={playlistData} />
     </View>
   );
 };

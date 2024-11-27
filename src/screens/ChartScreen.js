@@ -43,6 +43,10 @@ const ChartScreen = ({navigation}) => {
   useEffect(() => {
     // 처음 렌더링 될 때 현재 날짜와 시간을 설정
     setCurrentDate(moment().format('HH:mm'));
+
+    fetchData(chartType, error =>
+      console.error(`${chartType} Chart Error:`, error),
+    );
   }, []);
 
   useFocusEffect(

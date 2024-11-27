@@ -86,12 +86,15 @@ const LoginScreen = ({navigation}) => {
         // AsyncStorage에 저장
         await AsyncStorage.setItem('token', data.access_token);
         await AsyncStorage.setItem('userId', data.userId.toString()); // userid 문자열로 저장
+        await AsyncStorage.setItem('playlistId', data.playlistId.toString()); // playlistId 저장
 
         const token = await AsyncStorage.getItem('token');
         const userId = await AsyncStorage.getItem('userId');
+        const playlistId = await AsyncStorage.getItem('playlistId');
 
         console.log('Stored token:', token);
         console.log('Stored userId:', userId);
+        console.log('Stored playlistId:', playlistId);
 
         Toast.show({
           type: 'success',
