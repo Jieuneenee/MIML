@@ -102,12 +102,11 @@ const SongDetailScreen = ({route}) => {
         }, 2000);
       }
     } catch (error) {
-      console.error('Error sharing song:', error);
       Toast.show({
         type: 'error',
         position: 'bottom',
-        text1: '노래 공유 중 오류가 발생했습니다.',
-        text2: '다시 시도해주세요.',
+        text1: '오늘은 노래공유를 했어요!!',
+        text2: '내일 다시 공유해주세요!',
       });
     }
   };
