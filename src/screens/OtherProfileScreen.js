@@ -112,7 +112,6 @@ const OtherProfileScreen = ({route}) => {
       // 상태 업데이트
       setIsFollowing(prev => !prev);
     } catch (error) {
-      console.error('Error toggling follow status:', error);
       Toast.show({
         type: 'error',
         text1: '오류',

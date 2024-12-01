@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import AccountListItem from '../components/AccountListItem.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {BASE_URL} from '../../env';
 
 const FollowingScreen = () => {
