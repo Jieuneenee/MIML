@@ -75,19 +75,6 @@ const OtherProfileScreen = ({route}) => {
       }
 
       if (!isFollowing) {
-        console.log(
-          'profile.user.userId:',
-          profile.user.userId,
-          'Type:',
-          typeof profile.user.userId,
-        );
-        console.log(
-          'currentUserId:',
-          currentUserId,
-          'Type:',
-          typeof currentUserId,
-        );
-
         // 팔로우 요청
         const url = `${BASE_URL}/users/${profile.user.userId}/follow`;
         await axios.post(
@@ -108,10 +95,17 @@ const OtherProfileScreen = ({route}) => {
           navigation.navigate('Home', {reloadFeed: true});
         }, 3000);
       } else {
+        // 언팔로우 요청
+        const url = `${BASE_URL}/users/${profile.user.userId}/unfollow`;
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         Toast.show({
           type: 'info',
-          text1: '알림',
-          text2: '언팔로우 기능은 아직 구현되지 않았습니다.',
+          text1: `${profile.user.name}님을 언팔로우했습니다.`,
+          text2: '더 이상 공유된 노래를 볼 수 없습니다.',
         });
       }
 
@@ -122,7 +116,9 @@ const OtherProfileScreen = ({route}) => {
       Toast.show({
         type: 'error',
         text1: '오류',
-        text2: '팔로우 요청 처리 중 문제가 발생했습니다.',
+        text2: isFollowing
+          ? '언팔로우 요청 처리 중 문제가 발생했습니다.'
+          : '팔로우 요청 처리 중 문제가 발생했습니다.',
       });
     }
   };
