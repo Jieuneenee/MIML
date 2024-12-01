@@ -41,38 +41,6 @@ const TodayPlaylistScreen = ({navigation}) => {
     }
   };
 
-  const handleBackPress = () => {
-    navigation.navigate('Chart');
-  };
-
-  // 전체선택 버튼 함수
-  const toggleAllSelectButton = () => {
-    setAllButton(!allButton);
-    if (!allButton) {
-      // 선택된 차트 타입에 따라 각 차트 데이터 배열을 참조
-      let chartData = playlistData;
-      // 전체 선택 상태로 변경 시 해당 차트 데이터의 모든 곡 ID를 선택
-      setSelectedSong(chartData.map(song => song.id));
-    } else {
-      // 전체 선택 해제 시 모든 곡 선택 해제
-      setSelectedSong([]);
-    }
-  };
-
-  // 전체선택 버튼 스타일
-  const allButtonStyle = {
-    width: 20,
-    height: 20,
-    marginRight: 1, // 버튼과 텍스트 사이 간격 설정
-    borderRadius: 15,
-    borderWidth: 1,
-    borderWidth: allButton ? 0 : 1, // allButton이 true일 때 테두리 없애기
-    borderColor: allButton ? 'transparent' : 'white', // allButton이 true일 때 테두리 색상 없애기
-    backgroundColor: allButton ? '#1ED760' : 'transparent', // 상태에 따라 배경색 변경
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>

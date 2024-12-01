@@ -14,6 +14,10 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+import {
+  addToMyPlaylist,
+  deletefromMyPlaylist,
+} from '../utils/fetchMyPlaylist.js';
 
 // 노래를 렌더링하는 함수
 const RenderSongs = ({
@@ -108,12 +112,24 @@ const RenderSongs = ({
   };
 
   // Add to Playlist 버튼 클릭 시
-  const handleAddToPlaylist = () => {
-    // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
+  const handleAddToPlaylist = async () => {
+    console.log(selectedSong);
     console.log('Add to Playlist 클릭됨');
+
+    // 선택된 곡이 있을 때만 처리
+    if (selectedSong) {
+      await addToMyPlaylist(selectedSong, error =>
+        console.error(`add to My Playlist Error:`, error),
+      );
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: '곡을 선택해주세요.',
+      });
+    }
+
     setSelectedSong({});
-    setShowAddButton(false); // 버튼 숨기기
-    //setAllButton(false);
+    setShowAddButton(false); // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
   };
 
   const ItemSeparator = () => <View style={{height: 16}} />;

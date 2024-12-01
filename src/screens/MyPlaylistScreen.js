@@ -7,15 +7,12 @@ import {fetchMyPlaylist} from '../utils/fetchMyPlaylist.js';
 import RenderPlaylist from '../components/renderPlaylist.js';
 
 const MyPlaylistScreen = ({navigation}) => {
-  // 각 차트 데이터를 별도로 관리할 상태
+  // 현재 노래 데이터를 관리할 상태
   const [playlistData, setPlaylistData] = useState([]);
-  const [allButton, setAllButton] = useState(false); //전체선택 버튼 상태
-  const [selectedSong, setSelectedSong] = useState([]); // selectedSong 상태 관리
 
-  // 컴포넌트가 처음 렌더링될 때 'daily' 차트 데이터를 불러옵니다.
   useEffect(() => {
     fetchData();
-  }, []); // 빈 배열은 컴포넌트 마운트 시 한번만 실행됨
+  }, []); // 처음에 데이터 불러오기
 
   const fetchData = async () => {
     const UserId = await AsyncStorage.getItem('userId');
@@ -24,7 +21,7 @@ const MyPlaylistScreen = ({navigation}) => {
 
     try {
       // API 함수 호출
-      const playlistType = 'my'; // chartType 변수 선언
+      const playlistType = 'my'; // playlistType 변수 선언
       const data = await fetchMyPlaylist(token, playlistType, UserId, error =>
         console.error(`My Playlist Error:`, error),
       );
@@ -35,37 +32,6 @@ const MyPlaylistScreen = ({navigation}) => {
     } catch (error) {
       console.error('Failed to fetch playlist:', error);
     }
-  };
-  const handleBackPress = () => {
-    navigation.navigate('Chart');
-  };
-
-  // 전체선택 버튼 함수
-  const toggleAllSelectButton = () => {
-    setAllButton(!allButton);
-    if (!allButton) {
-      // 선택된 차트 타입에 따라 각 차트 데이터 배열을 참조
-      let chartData = playlistData;
-      // 전체 선택 상태로 변경 시 해당 차트 데이터의 모든 곡 ID를 선택
-      setSelectedSong(chartData.map(song => song.id));
-    } else {
-      // 전체 선택 해제 시 모든 곡 선택 해제
-      setSelectedSong([]);
-    }
-  };
-
-  // 전체선택 버튼 스타일
-  const allButtonStyle = {
-    width: 20,
-    height: 20,
-    marginRight: 1, // 버튼과 텍스트 사이 간격 설정
-    borderRadius: 15,
-    borderWidth: 1,
-    borderWidth: allButton ? 0 : 1, // allButton이 true일 때 테두리 없애기
-    borderColor: allButton ? 'transparent' : 'white', // allButton이 true일 때 테두리 색상 없애기
-    backgroundColor: allButton ? '#1ED760' : 'transparent', // 상태에 따라 배경색 변경
-    justifyContent: 'center',
-    alignItems: 'center',
   };
 
   return (
@@ -80,7 +46,7 @@ const MyPlaylistScreen = ({navigation}) => {
         <Text style={styles.title2}>나만의 PlayList</Text>
       </View>
 
-      {/* 선택된 차트를 화면에 렌더링 */}
+      {/* 나만의 플레이리스트를 화면에 렌더링 */}
       {/* renderChart 컴포넌트에 상태와 함수 전달 */}
       <RenderPlaylist chartType={'myPlaylist'} playlistData={playlistData} />
     </View>

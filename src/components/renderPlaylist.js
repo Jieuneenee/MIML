@@ -28,7 +28,6 @@ const RenderPlaylist = ({chartType, playlistData}) => {
   const [playlist, setPlaylist] = useState(playlistData || []); // 초기 플레이리스트 데이터 설정
 
   useEffect(() => {
-    // 차트 타입이 변경될 때 전체선택 버튼 해제
     setSelectedSong(null); // 선택된 노래 초기화
     setShowAddButton(false); // 버튼 초기화
     setPlaylist(playlistData);
@@ -49,13 +48,6 @@ const RenderPlaylist = ({chartType, playlistData}) => {
     console.log('렌더링 할 데이터가 없습니다...');
     return null;
   }
-
-  // 데이터를 고유 ID가 포함된 데이터로 변환
-  let dataWithIds = data.map((item, index) => ({
-    ...item,
-    //id: uuid.v4(), // 고유 ID를 각 항목에 추가 -> 이거 쓰면... id가 랜덤이라 리렌더링 문제 발생! id 넘겨달라고 해야함!!
-    //rank: index + 1, // 1부터 시작하는 순위 추가
-  }));
 
   // 노래 선택 함수
   const handleSongSelect = songId => {
