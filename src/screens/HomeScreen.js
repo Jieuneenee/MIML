@@ -12,7 +12,9 @@ const SongCard = ({item, userId}) => {
   const [reactionCount, setReactionCount] = useState(item.Song.reaction || 0); // 객체로 변경
 
   const handleReaction = () => {
-    setReactionCount(reactionCount + 1);
+    if (item.id !== userId) {
+      setReactionCount(reactionCount + 1);
+    }
   };
 
   const handleSpotifyClick = (spotifyUrl, spotifyUri) => {
@@ -28,6 +30,8 @@ const SongCard = ({item, userId}) => {
   };
 
   const song = item.Song; // 배열이 아니라 객체
+
+  const isDisabled = item.id === userId; // 비활성화 여부
 
   return (
     <Card MyId={item.id === userId}>
@@ -87,8 +91,15 @@ const SongCard = ({item, userId}) => {
                 })
               : 'Unknown Date'}
           </DateText>
-          <ReactionButton onPress={handleReaction}>
-            <ReactionIcon>♥️</ReactionIcon>
+          <ReactionButton
+            onPress={handleReaction}
+            disabled={isDisabled}
+            style={
+              isDisabled ? {backgroundColor: '#935a5a', opacity: 0.8} : {}
+            }>
+            <ReactionIcon style={isDisabled ? {opacity: 0.5} : {}}>
+              ♥️
+            </ReactionIcon>
             <ReactionText>{reactionCount}</ReactionText>
           </ReactionButton>
         </RowContainer>
@@ -102,56 +113,57 @@ const HomeScreen = () => {
   const [feedData, setFeedData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const route = useRoute(); // 라우트 훅을 통해 파라미터 받기
+  const route = useRoute();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedUserId = await AsyncStorage.getItem('userId');
-        const token = await AsyncStorage.getItem('token');
+  const fetchData = async () => {
+    try {
+      const storedUserId = await AsyncStorage.getItem('userId');
+      const token = await AsyncStorage.getItem('token');
 
-        if (!storedUserId || !token) {
-          setErrorMessage('User ID or Auth Token is missing.');
-          setLoading(false);
-          return;
-        }
-
-        setUserId(parseInt(storedUserId, 10));
-
-        const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setFeedData(response.data); // 데이터 업데이트
-        console.log('Fetched data:', JSON.stringify(response.data, null, 2));
-
-        if (response.data.length === 0) {
-          setErrorMessage('아직 공유된 노래가 없습니다');
-        } else {
-          setErrorMessage('');
-        }
-      } catch (error) {
-        setErrorMessage('공유된 노래가 없습니다');
-      } finally {
-        setLoading(false); // 데이터 가져오기 끝났으면 로딩 상태 false로 설정
+      if (!storedUserId || !token) {
+        setErrorMessage('User ID or Auth Token is missing.');
+        return;
       }
-    };
 
-    // 메뉴 접근 시에도 데이터를 불러오고, reloadFeed가 true일 경우에는 데이터 새로 불러오기
-    if (route.params?.reloadFeed || feedData.length === 0) {
-      setLoading(true); // 데이터 로딩 시작
+      setUserId(parseInt(storedUserId, 10));
+
+      const response = await axios.get(`${BASE_URL}/feed/${storedUserId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setFeedData(response.data);
+
+      if (response.data.length === 0) {
+        setErrorMessage('아직 공유된 노래가 없습니다');
+      } else {
+        setErrorMessage('');
+      }
+    } catch (error) {
+      setErrorMessage('공유된 노래가 없습니다');
+    }
+  };
+
+  // 화면이 포커스를 받을 때 데이터를 가져오기
+  useFocusEffect(
+    React.useCallback(() => {
+      setLoading(true);
+      fetchData().finally(() => setLoading(false));
+    }, []),
+  );
+
+  // reloadFeed 값이 변경되었을 때 데이터를 가져오기
+  useEffect(() => {
+    if (route.params?.reloadFeed) {
+      setLoading(true);
       fetchData().finally(() => {
-        setLoading(false); // 데이터 로딩 끝
-        if (route.params?.reloadFeed) {
-          // reloadFeed를 false로 초기화
-          navigation.setParams({reloadFeed: false});
-        }
+        setLoading(false);
+        navigation.setParams({reloadFeed: false}); // reloadFeed를 초기화
       });
     }
-  }, [route.params?.reloadFeed, feedData.length]); // reloadFeed와 feedData.length가 변경될 때마다 호출
+  }, [route.params?.reloadFeed]);
 
   // 로딩 중일 때 로딩 텍스트 반환
   if (loading) {
@@ -172,7 +184,7 @@ const HomeScreen = () => {
             data={feedData}
             renderItem={({item}) => <SongCard item={item} userId={userId} />}
             keyExtractor={item => `${item.id}-${uuid.v4()}`}
-            extraData={feedData} // feedData가 변경될 때마다 렌더링이 일어나도록 설정
+            extraData={feedData}
           />
         )}
       </ListContainer>
@@ -184,6 +196,7 @@ export default HomeScreen;
 
 const Container = styled.View`
   flex: 1;
+  background-color: #000;
 `;
 
 const HeaderContainer = styled.View`
