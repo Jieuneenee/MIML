@@ -4,14 +4,13 @@ import styled from 'styled-components/native';
 import AccountListItem from '../components/AccountListItem.js';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {BASE_URL} from '../../env';
 
 const FollowingScreen = () => {
   const [followingList, setFollowingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 상태 추가
 
   const fetchFollowers = async () => {
     try {

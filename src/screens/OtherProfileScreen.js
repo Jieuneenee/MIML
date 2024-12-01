@@ -104,7 +104,7 @@ const OtherProfileScreen = ({route}) => {
         });
         Toast.show({
           type: 'info',
-          text1: `${profile.user.name}님을 언팔로우했습니다.`,
+          text1: `${profile.user.name}님을 언팔로우합니다.`,
           text2: '더 이상 공유된 노래를 볼 수 없습니다.',
         });
       }
