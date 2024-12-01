@@ -10,56 +10,60 @@ const FollowingScreen = () => {
   const [followingList, setFollowingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false); // 새로고침 상태 추가
+
+  const fetchFollowers = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (token && userId) {
+        const response = await axios.get(
+          `${BASE_URL}/users/profile/${userId}/following`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (
+          response.status === 404 ||
+          response.data.detail === 'No followers found'
+        ) {
+          setFollowingList([]);
+          setError('팔로잉 목록이 없습니다.');
+        } else {
+          setFollowingList(response.data);
+          setError(null);
+        }
+      }
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 404) {
+          setError('팔로잉 목록이 없습니다.');
+        } else {
+          setError(
+            `Failed to load followers: ${err.response.status} ${err.response.statusText}`,
+          );
+        }
+      } else {
+        setError('Failed to load followers');
+      }
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false); // 새로고침 완료
+    }
+  };
 
   useEffect(() => {
-    const fetchFollowers = async () => {
-      try {
-        setLoading(true);
-        const token = await AsyncStorage.getItem('token');
-        const userId = await AsyncStorage.getItem('userId');
-
-        if (token && userId) {
-          const response = await axios.get(
-            `${BASE_URL}/users/profile/${userId}/following`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-
-          // 404 상태 코드 또는 팔로워가 없다는 메시지가 올 경우
-          if (
-            response.status === 404 ||
-            response.data.detail === 'No followers found'
-          ) {
-            setFollowingList([]);
-            setError('팔로잉 목록이 없습니다.'); // 에러 메시지
-          } else {
-            setFollowingList(response.data);
-            console.log('Following:', response.data);
-            setError(null); // 에러 없으면 에러 상태 초기화
-          }
-        }
-      } catch (err) {
-        if (err.response) {
-          if (err.response.status === 404) {
-            setError('팔로잉 목록이 없습니다.');
-          } else {
-            setError(
-              `Failed to load followers: ${err.response.status} ${err.response.statusText}`,
-            );
-          }
-        } else {
-          setError('Failed to load followers');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFollowers();
   }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true); // 새로고침 시작
+    fetchFollowers();
+  };
 
   if (loading) {
     return <LoadingText>Loading...</LoadingText>;
@@ -72,6 +76,7 @@ const FollowingScreen = () => {
       </ErrorTextContainer>
     );
   }
+
   return (
     <Container>
       <FlatList
@@ -82,12 +87,14 @@ const FollowingScreen = () => {
             name={item.name}
             profileImageUrl={
               item.profileImageUrl
-                ? item.profileImageUrl // 유효한 이미지 URL
-                : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png' // 기본 이미지 URL
+                ? item.profileImageUrl
+                : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
             }
             userId={item.userId}
           />
         )}
+        refreshing={isRefreshing} // 새로고침 상태 연결
+        onRefresh={handleRefresh} // 새로고침 동작 연결
       />
     </Container>
   );

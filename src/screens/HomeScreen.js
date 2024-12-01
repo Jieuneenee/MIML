@@ -6,11 +6,10 @@ import axios from 'axios';
 import {BASE_URL} from '../../env';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useRoute} from '@react-navigation/native';
+import uuid from 'react-native-uuid';
 
 const SongCard = ({item, userId}) => {
-  const [reactionCount, setReactionCount] = useState(
-    item.Song[0]?.reaction || 0,
-  ); // 안전하게 접근
+  const [reactionCount, setReactionCount] = useState(item.Song.reaction || 0); // 객체로 변경
 
   const handleReaction = () => {
     setReactionCount(reactionCount + 1);
@@ -28,11 +27,11 @@ const SongCard = ({item, userId}) => {
       .catch(err => console.error('Error checking URL support:', err));
   };
 
-  const song = item.Song.length > 0 ? item.Song[0] : null;
+  const song = item.Song; // 배열이 아니라 객체
 
   return (
     <Card MyId={item.id === userId}>
-      {item.id !== userId ? (
+      {item.id !== userId && (
         <ProfileImage
           source={{
             uri:
@@ -41,7 +40,7 @@ const SongCard = ({item, userId}) => {
                 : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
           }}
         />
-      ) : null}
+      )}
       <ContentContainer>
         {item.id !== userId && <UserName>{item.name}</UserName>}
         <SongBox>
@@ -73,7 +72,7 @@ const SongCard = ({item, userId}) => {
               </TouchableOpacity>
             </>
           ) : (
-            <Text>No song data available</Text> // Song 데이터가 없을 경우 표시할 텍스트
+            <Text>No song data available</Text>
           )}
         </SongBox>
         <RowContainer>
@@ -172,7 +171,7 @@ const HomeScreen = () => {
           <FlatList
             data={feedData}
             renderItem={({item}) => <SongCard item={item} userId={userId} />}
-            keyExtractor={item => `${item.id}`}
+            keyExtractor={item => `${item.id}-${uuid.v4()}`}
             extraData={feedData} // feedData가 변경될 때마다 렌더링이 일어나도록 설정
           />
         )}
