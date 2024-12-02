@@ -9,11 +9,30 @@ import {useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 
 const SongCard = ({item, userId}) => {
-  const [reactionCount, setReactionCount] = useState(item.Song.reaction || 0); // 객체로 변경
+  const [reactionCount, setReactionCount] = useState(item.Song.reaction || 0);
+  const [isReacted, setIsReacted] = useState(false);
+  const songId = item.Song.songId;
 
-  const handleReaction = () => {
-    if (item.id !== userId) {
-      setReactionCount(reactionCount + 1);
+  const handleReaction = async () => {
+    if (isReacted || item.id === userId) return; // 자신이 공유한 노래 리액션 불가
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${BASE_URL}/songs/${songId}/reactions`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        setReactionCount(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Failed to add reaction:', error);
     }
   };
 
@@ -29,9 +48,9 @@ const SongCard = ({item, userId}) => {
       .catch(err => console.error('Error checking URL support:', err));
   };
 
-  const song = item.Song; // 배열이 아니라 객체
+  const song = item.Song;
 
-  const isDisabled = item.id === userId; // 비활성화 여부
+  const isDisabled = item.id === userId || isReacted;
 
   return (
     <Card MyId={item.id === userId}>
@@ -135,6 +154,7 @@ const HomeScreen = () => {
       });
 
       setFeedData(response.data);
+      console.log(response.data);
 
       if (response.data.length === 0) {
         setErrorMessage('아직 공유된 노래가 없습니다');
