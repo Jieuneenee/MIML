@@ -33,20 +33,23 @@ const RenderPlaylist = ({chartType, playlistData}) => {
     setPlaylist(playlistData);
   }, [playlistData]);
 
-  let data =
-    chartType === 'daily'
-      ? dailyChartData
-      : chartType === 'weekly'
-      ? weeklyChartData
-      : chartType === 'monthly'
-      ? monthlyChartData
-      : chartType === 'yearly'
-      ? yearlyChartData
-      : playlistData;
-
   if (!playlistData || playlistData.length === 0) {
     console.log('렌더링 할 데이터가 없습니다...');
-    return null;
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyMessage}>
+          앗!!
+          {chartType === 'todayPlaylist'
+            ? ' 아직 오늘의 플레이리스트가 생성되지 않았나봐요...'
+            : ' 아직 나만의 플레이리스트에 추가한 노래가 없나봐요!!'}
+        </Text>
+        <Text style={styles.emptyMessage}>
+          {chartType === 'todayPlaylist'
+            ? '오늘 추천받은 노래는 18시에 생성됩니다!!'
+            : '지금 추가해보는건 어떨까요?'}
+        </Text>
+      </View>
+    );
   }
 
   // 노래 선택 함수
@@ -116,7 +119,7 @@ const RenderPlaylist = ({chartType, playlistData}) => {
     }
 
     setSelectedSong({});
-    setShowAddButton(false); // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
+    setShowAddButton(false); // Add to Playlist 버튼 클릭 시 selectedSong, 버튼 초기화
   };
 
   // Delete Songs 버튼 클릭 시
@@ -168,9 +171,9 @@ const RenderPlaylist = ({chartType, playlistData}) => {
           <View style={styles.container}>
             {/* 동그라미 선택 버튼 */}
             <TouchableOpacity
-              style={getButtonStyle(item.songId)}
-              onPress={() => handleSongSelect(item.songId)}>
-              {selectedSong === item.songId && ( // 선택된 노래일 때만 체크 표시
+              style={getButtonStyle(item.uri)}
+              onPress={() => handleSongSelect(item.uri)}>
+              {selectedSong === item.uri && ( // 선택된 노래일 때만 체크 표시
                 <Text style={styles.checkmark}>✔</Text>
               )}
             </TouchableOpacity>
@@ -218,6 +221,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 7,
     backgroundColor: '#111111', // 어두운 배경
+  },
+  emptyContainer: {
+    flex: 1,
+    marginTop: 90,
+    marginBottom: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyMessage: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
   circleButton: {
     width: 20,

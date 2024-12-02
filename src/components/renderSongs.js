@@ -152,9 +152,9 @@ const RenderSongs = ({
           <View style={styles.container}>
             {/* 동그라미 선택 버튼 */}
             <TouchableOpacity
-              style={getButtonStyle(item.rank)}
-              onPress={() => handleSongSelect(item.rank)}>
-              {selectedSong === item.rank && ( // 선택된 노래일 때만 체크 표시
+              style={getButtonStyle(item.uri)}
+              onPress={() => handleSongSelect(item.uri)}>
+              {selectedSong === item.uri && ( // 선택된 노래일 때만 체크 표시
                 <Text style={styles.checkmark}>✔</Text>
               )}
             </TouchableOpacity>
