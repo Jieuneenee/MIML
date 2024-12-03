@@ -1,28 +1,22 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started ### For Android
+# Getting Started 
+### For Android
 
 
-## Step 1: ReactNative 및 에뮬레이터 초기 설정
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Step 1: ReactNative 초기 세팅 및 주의사항
 
-To start Metro, run the following command from the _root_ of your React Native project:
+gradle.properties 에서의 JDK 실행경로가 맥이랑 윈도우랑 다르니 주의 필요
 
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
-```
-
+1. npm 설치
+2. java 17 설치 및 경로 설정
+3. Android Studio 설치 및 Android SDK 설정
+4. ANDROID_HOME 환경 변수 설정
+5. 에뮬레이터 생성
 
 
 
 ## Step 2: npm install
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
 ```bash
 # using npm
@@ -31,7 +25,6 @@ npm install
 
 
 ## Step 3: npx react-native start
-
 
 ```bash
 npx react-native start
