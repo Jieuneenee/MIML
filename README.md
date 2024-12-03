@@ -1,6 +1,7 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# Getting Started ### For Android
+
 
 ## Step 1: ReactNative 및 에뮬레이터 초기 설정
 
@@ -17,7 +18,7 @@ yarn start
 ```
 
 
-### For Android
+
 
 ## Step 2: npm install
 
