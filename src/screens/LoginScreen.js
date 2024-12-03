@@ -141,7 +141,7 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <Container>
-      <Title>Login</Title>
+      <Title>Music Is My Life.</Title>
       <InputField
         placeholder="Email"
         keyboardType="email-address"

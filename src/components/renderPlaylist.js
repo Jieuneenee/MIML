@@ -38,14 +38,13 @@ const RenderPlaylist = ({chartType, playlistData}) => {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyMessage}>
-          앗!!
           {chartType === 'todayPlaylist'
-            ? ' 아직 오늘의 플레이리스트가 생성되지 않았나봐요...'
-            : ' 아직 나만의 플레이리스트에 추가한 노래가 없나봐요!!'}
+            ? ' 앗!!'
+            : ' 아직 추가한 노래가 없나봐요!!'}
         </Text>
         <Text style={styles.emptyMessage}>
           {chartType === 'todayPlaylist'
-            ? '오늘 추천받은 노래는 18시에 생성됩니다!!'
+            ? '오늘의 플리는 18시에 생성돼요!!'
             : '지금 추가해보는건 어떨까요?'}
         </Text>
       </View>
@@ -129,13 +128,20 @@ const RenderPlaylist = ({chartType, playlistData}) => {
 
     // 선택된 곡이 있을 때만 처리
     if (selectedSong) {
-      await deletefromMyPlaylist(selectedSong, error =>
+      const response = await deletefromMyPlaylist(selectedSong, error =>
         console.error(`delete from My Playlist Error:`, error),
       );
-      // 삭제된 곡을 제외한 새로운 배열 생성
-      setPlaylist(prevPlaylist =>
-        prevPlaylist.filter(song => song.songId !== selectedSong),
-      );
+      console.log(response); //응답확인용
+      // 응답 상태가 200일 경우에만 플레이리스트 업데이트
+      if (response.status === 200) {
+        //console.log('200 코드 잘 찍힘');
+        // 삭제된 곡을 제외한 새로운 배열 생성
+        setPlaylist(prevPlaylist =>
+          prevPlaylist.filter(song => song.uri !== selectedSong),
+        );
+      } else {
+        //console.log('200 코드 안 찍힘');
+      }
     } else {
       Toast.show({
         type: 'error',
@@ -159,7 +165,7 @@ const RenderPlaylist = ({chartType, playlistData}) => {
               : handleDeleteSongs
           }>
           <Text style={styles.addButtonText}>
-            {chartType === 'todayPlaylist' ? 'Add to Playlist' : 'Delete Songs'}
+            {chartType === 'todayPlaylist' ? 'Add to Playlist' : 'Delete Song'}
           </Text>
         </TouchableOpacity>
       )}

@@ -35,5 +35,3 @@ export async function fetchChartData(endpoint, onError) {
     onError(`Network Error: ${error.message}`);
   }
 }
-
-export async function createMyplaylist(userId, onError) {}

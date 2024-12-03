@@ -132,8 +132,6 @@ const RenderSongs = ({
     setShowAddButton(false); // Add to Playlist 버튼 클릭 시 selectedSong, allButton 초기화
   };
 
-  const ItemSeparator = () => <View style={{height: 16}} />;
-
   return (
     <View>
       {/* AddtoPlaylist 버튼을 FlatList 위에 고정 */}

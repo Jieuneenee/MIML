@@ -226,7 +226,7 @@ const Card = styled.View`
   margin-bottom: 20px;
   flex-direction: row;
   align-items: flex-start;
-  margin-left: ${({MyId}) => (MyId ? '100px' : '0')};
+  margin-left: ${({MyId}) => (MyId ? '150px' : '0')};
 `;
 
 const ProfileImage = styled.Image`

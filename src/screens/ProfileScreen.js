@@ -160,7 +160,7 @@ export default ProfileScreen;
 const Container = styled.View`
   flex: 1;
   background-color: #000;
-  padding-top: 40px;
+  padding-top: 150px;
 `;
 
 const ScrollContainer = styled.ScrollView`
@@ -182,8 +182,8 @@ const LogoutText = styled.Text`
 `;
 
 const ProfileImage = styled.Image`
-  width: 150px;
-  height: 150px;
+  width: 170px;
+  height: 170px;
   border-radius: 70px;
   align-self: center;
   margin-top: 50px;
@@ -191,11 +191,11 @@ const ProfileImage = styled.Image`
 `;
 
 const UserName = styled.Text`
-  font-size: 24px;
+  font-size: 30px;
   color: #fff;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 const ButtonContainer = styled.View`
@@ -206,15 +206,18 @@ const ButtonContainer = styled.View`
 
 const FollowButton = styled.TouchableOpacity`
   background-color: #b08385;
-  padding: 10px 20px;
+  padding: 10px 30px;
   margin: 0 10px;
   border-radius: 5px;
-  height: 40px;
+  height: 50px;
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
 `;
 
 const ButtonText = styled.Text`
   color: #fff;
-  font-size: 15px;
+  font-size: 20px;
+  text-align: center;
 `;
 
 const PlaylistTitle = styled.Text`
@@ -222,7 +225,7 @@ const PlaylistTitle = styled.Text`
   color: #fff;
   font-weight: bold;
   margin-bottom: 5px;
-  margin-top: 40px;
+  margin-top: 60px;
   padding-left: 20px;
 `;
 
@@ -232,7 +235,7 @@ const PlaylistContainer = styled.View`
   background-color: #333;
   padding: 10px;
   border-radius: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 20px;
   margin-left: 20px;
   margin-right: 20px;

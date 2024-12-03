@@ -45,7 +45,7 @@ const OtherProfileScreen = ({route}) => {
 
   // 로딩 중일 때
   if (!profile) {
-    return <LoadingText>Loading...</LoadingText>;
+    return <Container></Container>;
   }
   const handleFollowToggle = async () => {
     try {
@@ -162,36 +162,37 @@ const Container = styled.View`
   flex: 1;
   background-color: #000;
   align-items: center;
-  padding-top: 40px;
+  padding-top: 120px;
 `;
 
 const ProfileImage = styled.Image`
-  width: 150px;
-  height: 150px;
+  width: 170px;
+  height: 170px;
   border-radius: 70px;
   margin-top: 30px;
   margin-bottom: 16px;
 `;
 
 const UserName = styled.Text`
-  font-size: 24px;
+  font-size: 30px;
   color: #fff;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 const FollowButton = styled.TouchableOpacity`
   background-color: #b08385;
-  padding: 10px 20px;
+  padding: 10px 30px;
   margin: 0 10px;
   border-radius: 5px;
-  height: 40px;
-  justify-content: center;
+  height: 50px;
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
 `;
 
 const ButtonText = styled.Text`
   color: #fff;
-  font-size: 15px;
+  font-size: 20px;
 `;
 
 const PlaylistTitle = styled.Text`
@@ -199,7 +200,7 @@ const PlaylistTitle = styled.Text`
   color: #fff;
   font-weight: bold;
   margin-bottom: 5px;
-  margin-top: 40px;
+  margin-top: 50px;
   margin-right: 150px;
 `;
 

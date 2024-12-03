@@ -170,7 +170,17 @@ const App = () => {
         <Stack.Screen
           name="ChartDetail"
           component={ChartDetailScreen}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#111111',
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerTintColor: '#FFFFFF',
+            headerBackTitleVisible: false,
+          }}
         />
         <Stack.Screen
           name="TodayPlaylist"

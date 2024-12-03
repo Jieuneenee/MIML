@@ -160,14 +160,14 @@ const Container = styled.View`
 
 const AlbumCover = styled.Image`
   width: 100%;
-  height: 300px;
+  height: 380px;
   border-radius: 10px;
-  margin-bottom: 20px;
-  margin-top: 0px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 `;
 
 const Title = styled.Text`
-  font-size: 24px;
+  font-size: 30px;
   color: #fff;
   font-weight: bold;
   text-align: center;
@@ -183,7 +183,7 @@ const Artist = styled.Text`
 
 const ButtonContainer = styled.View`
   flex-direction: row;
-  margin-top: 15px;
+  margin-top: 40px;
   width: 100%;
   justify-content: center;
 `;
@@ -198,12 +198,14 @@ const ActionButton = styled.TouchableOpacity`
   justify-content: center;
   margin-left: 5px;
   margin-right: 5px;
-  width: 180px;
+  margin-top: 10px;
+  width: 230px;
+  height: 50px;
 `;
 
 const ButtonText = styled.Text`
   color: #fff;
-  font-size: 13px;
+  font-size: 18px;
 `;
 
 const PlayButton = styled.TouchableOpacity`
@@ -211,12 +213,12 @@ const PlayButton = styled.TouchableOpacity`
   height: 60px;
   justify-content: center;
   align-items: center;
-  margin-top: -30px;
+  margin-top: -40px;
   align-self: flex-end;
-  margin-right: 10px;
+  margin-right: 0px;
 `;
 
 const PlayButtonImage = styled.Image`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 130px;
 `;

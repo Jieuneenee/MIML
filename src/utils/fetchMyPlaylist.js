@@ -53,6 +53,8 @@ export async function fetchMyPlaylist(token, playlistType, userId, onError) {
 
 // 곡 추가 함수
 export async function addToMyPlaylist(selectedSong, onError) {
+  console.log(selectedSong);
+  console.log('Request body:', JSON.stringify({uri: selectedSong}));
   const token = await AsyncStorage.getItem('token');
   const playlistId = await AsyncStorage.getItem('playlistId');
   try {
@@ -62,7 +64,7 @@ export async function addToMyPlaylist(selectedSong, onError) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`, // 인증 토큰
       },
-      body: JSON.stringify({songId: selectedSong}),
+      body: JSON.stringify({uri: selectedSong}),
     });
 
     console.log(`Response Status for ${playlistId}:`, response.status);
@@ -86,8 +88,7 @@ export async function addToMyPlaylist(selectedSong, onError) {
       Toast.show({
         type: 'error',
         position: 'top',
-        text1: `${errorData.detail || '노래 추가에 실패했습니다.'}`,
-        text2: '곡을 추가하는 데 오류가 발생했습니다.',
+        text1: '해당 곡은 이미 플레이리스트에 있습니다.',
         visibilityTime: 3000,
         autoHide: true,
       });
@@ -103,16 +104,14 @@ export async function deletefromMyPlaylist(selectedSong, onError) {
   const token = await AsyncStorage.getItem('token');
   const playlistId = await AsyncStorage.getItem('playlistId');
   try {
-    const response = await fetch(
-      `${BASE_URL}/playlists/${playlistId}/remove/${selectedSong}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // 인증 토큰
-        },
+    const response = await fetch(`${BASE_URL}/playlists/${playlistId}/remove`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // 인증 토큰
       },
-    );
+      body: JSON.stringify({uri: selectedSong}),
+    });
 
     console.log(`Response Status for ${playlistId}:`, response.status);
 
@@ -127,6 +126,7 @@ export async function deletefromMyPlaylist(selectedSong, onError) {
         visibilityTime: 3000,
         autoHide: true,
       });
+      return response;
     } else {
       const errorData = JSON.parse(responseBody); // 실패 응답 처리
       //onError(`Error from server: ${errorData.message || 'Unknown error'}`);
@@ -134,10 +134,11 @@ export async function deletefromMyPlaylist(selectedSong, onError) {
         type: 'error',
         position: 'top',
         text1: `${errorData.detail || '노래 추가에 실패했습니다.'}`,
-        text2: '곡을 추가하는 데 오류가 발생했습니다.',
+        text2: '곡을 삭제하는 데 오류가 발생했습니다.',
         visibilityTime: 3000,
         autoHide: true,
       });
+      return response;
     }
   } catch (error) {
     // 네트워크 또는 기타 오류 처리
