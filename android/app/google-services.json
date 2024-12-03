@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888724702220",
+    "project_id": "miml-96b13",
+    "storage_bucket": "miml-96b13.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888724702220:android:43094d98fdb7d86915da29",
+        "android_client_info": {
+          "package_name": "com.falsy.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "보안문제로 가려요..!!"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
